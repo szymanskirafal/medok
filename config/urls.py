@@ -16,6 +16,7 @@ urlpatterns = [
     path("users/", include("medok.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
+    path("patients/", include("patients.urls", namespace="patients")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

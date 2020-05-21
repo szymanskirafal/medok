@@ -1,4 +1,8 @@
 /* These styles are generated from project.scss. */
+table th {
+    font-size: 13px;
+    font-weight: lighter;
+}
 
 .alert-debug {
   color: black;

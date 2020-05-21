@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dodaj pacjenta{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <form action="#" method="post">
+  {{ form.as_p }}
+  {% csrf_token %}
+  <input class="btn btn-success" type="submit" value="Dodaj">
+</form>
+
+</div>
+{% endblock content %}

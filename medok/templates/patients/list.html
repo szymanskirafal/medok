@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Lista pacjentów{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Lista pacjentów</h1>
+
+  {% for patient in patients %}
+    <a href="{% url 'patients:detail' patient.pk %}" role="button"><p>{{ patient.name }} {{ patient.surname }}</p></a>
+  {% endfor %}
+  <hr>
+  <a class="btn btn-outline-success" href="{% url 'patients:create' %}" role="button">Dodaj nowego pacjenta</a>
+
+</div>
+{% endblock content %}

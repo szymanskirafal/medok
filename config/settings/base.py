@@ -74,6 +74,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "medok.users.apps.UsersConfig",
     # Your stuff: custom apps go here
+    "patients.apps.PatientsConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -268,3 +269,4 @@ SOCIALACCOUNT_ADAPTER = "medok.users.adapters.SocialAccountAdapter"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+SITE_ID = 1
