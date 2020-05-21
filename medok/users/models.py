@@ -10,7 +10,9 @@ class User(AbstractUser):
     # around the globe.
     name = models.CharField(_("Name"), null=False, blank=False, max_length=255,)
     surname = models.CharField(_("Surname"), null=False, blank=False, max_length=255,)
-    pesel = models.PositiveIntegerField(_("PESEL"), null=False, blank=False)
+    pesel = models.BigIntegerField(
+        _("PESEL"), null=False, blank=False, min_length=11, max_length=11,
+    )
     nurse = models.BooleanField(_("Nurse"), default=True)
     doctor = models.BooleanField(_("Doctor"), default=False)
     psychologist = models.BooleanField(_("Psychologist"), default=False)
