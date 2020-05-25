@@ -5,6 +5,10 @@
 {% block content %}
 <div class="vw-100">
   <h1>{{ patient.name }} {{ patient.surname }}</h1>
+  <h3>Badania wymagane</h3>
+  <a class="btn btn-outline-success" href="{% url 'patients:examinations' patient.pk %}" role="button">Dodaj badanie</a>
+  <br><br>
+  <h3>Badania dodatkowe</h3>
   <h2>KGO</h2>
   <table class="table table-bordered table-hover table-sm font-weight-lighter">
   <thead class="font-weight-lighter">

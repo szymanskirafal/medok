@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="vw-100">
+  <h1>{{ patient.name }} {{ patient.surname }}</h1>
+  <h2>Badania</h2>
+
+  <form action="" method="post">
+    {{ temperature_form|crispy }}
+    {% csrf_token %}
+    <input class="btn btn-success" type="submit" value="Zapisz wynik">
+  </form>
+
+  <form action="" method="post">
+    {{ pulse_form|crispy }}
+    {% csrf_token %}
+    <input class="btn btn-success" type="submit" value="Zapisz wynik">
+  </form>
+
+  <form action="" method="post">
+    {{ pressure_form|crispy }}
+    {% csrf_token %}
+    <input class="btn btn-success" type="submit" value="Zapisz wynik">
+  </form>
+
+  <form action="" method="post">
+    {{ faeces_form|crispy }}
+    {% csrf_token %}
+    <input class="btn btn-success" type="submit" value="Zapisz wynik">
+  </form>
+
+  <form action="" method="post">
+    {{ diet_form|crispy }}
+    {% csrf_token %}
+    <input class="btn btn-success" type="submit" value="Zapisz wynik">
+  </form>
+
+</div>
+<br><br>
+{% endblock content %}
