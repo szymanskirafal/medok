@@ -49,15 +49,15 @@ class PatientExaminationsDisplayView(LoginRequiredMixin, generic.DetailView):
     model = Patient
     template_name = "patients/examinations.html"
 
-    def check_required_examinations(self, **kwargs):
-        diet_recommendations = DietRecommendation.objects.all().filter(
-            patient=self.get_object()
-        )
-        diet = diet_recommendations.first()
-        print(" ------ diet.first ", diet.created)
+    # def check_required_examinations(self, **kwargs):
+    #    diet_recommendations = DietRecommendation.objects.all().filter(
+    #        patient=self.get_object()
+    #    )
+    #    diet = diet_recommendations.first()
+    #    print(" ------ diet.first ", diet.created)
 
-        any_examination_required = True
-        return any_examination_required
+    #    any_examination_required = True
+    #    return any_examination_required
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -66,7 +66,7 @@ class PatientExaminationsDisplayView(LoginRequiredMixin, generic.DetailView):
         context["pressure_form"] = PressureExaminationForm()
         context["pulse_form"] = PulseExaminationForm()
         context["temperature_form"] = TemperatureExaminationForm()
-        context["examinations_required"] = self.check_required_examinations()
+        # context["examinations_required"] = self.check_required_examinations()
         return context
 
 
