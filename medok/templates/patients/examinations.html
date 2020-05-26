@@ -2,42 +2,62 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-
 {% block content %}
 <div class="vw-100">
   <h1>{{ patient.name }} {{ patient.surname }}</h1>
-  <h2>Badania</h2>
-
-  <form action="" method="post">
-    {{ temperature_form|crispy }}
-    {% csrf_token %}
-    <input class="btn btn-success" type="submit" value="Zapisz wynik">
-  </form>
-
-  <form action="" method="post">
-    {{ pulse_form|crispy }}
-    {% csrf_token %}
-    <input class="btn btn-success" type="submit" value="Zapisz wynik">
-  </form>
-
-  <form action="" method="post">
-    {{ pressure_form|crispy }}
-    {% csrf_token %}
-    <input class="btn btn-success" type="submit" value="Zapisz wynik">
-  </form>
-
-  <form action="" method="post">
-    {{ faeces_form|crispy }}
-    {% csrf_token %}
-    <input class="btn btn-success" type="submit" value="Zapisz wynik">
-  </form>
-
-  <form action="" method="post">
-    {{ diet_form|crispy }}
-    {% csrf_token %}
-    <input class="btn btn-success" type="submit" value="Zapisz wynik">
-  </form>
-
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <h3>RANO</h3>
+        <h5>Badania do zrobienia</h5>
+        <br><br>
+        {% if temperature_form %}
+          <form action="" method="post">
+            {{ temperature_form|crispy }}
+            {% csrf_token %}
+            <input class="btn btn-success" type="submit" value="Zapisz wynik">
+          </form>
+          <br><br>
+        {% endif %}
+        {% if pulse_form %}
+          <form action="" method="post">
+            {{ pulse_form|crispy }}
+            {% csrf_token %}
+            <input class="btn btn-success" type="submit" value="Zapisz wynik">
+          </form>
+          <br><br>
+        {% endif %}
+        {% if pressure_form %}
+          <form action="" method="post">
+            {{ pressure_form|crispy }}
+            {% csrf_token %}
+            <input class="btn btn-success" type="submit" value="Zapisz wynik">
+          </form>
+          <br><br>
+        {% endif %}
+        {% if faeces_form %}
+          <form action="" method="post">
+            {{ faeces_form|crispy }}
+            {% csrf_token %}
+            <input class="btn btn-success" type="submit" value="Zapisz wynik">
+          </form>
+          <br><br>
+        {% endif %}
+        {% if diet_form %}
+          <form action="" method="post">
+            {{ diet_form|crispy }}
+            {% csrf_token %}
+            <input class="btn btn-success" type="submit" value="Zapisz wynik">
+          </form>
+          <br><br>
+        {% endif %}
+      </div>
+      <div class="col">
+        <h3>WIECZÓR</h3>
+        <h5>Badania do zrobienia</h5>
+      </div>
+    </div>
+  </div>
 </div>
 <br><br>
 {% endblock content %}

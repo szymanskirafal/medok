@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from django.urls import reverse, reverse_lazy
@@ -49,24 +51,63 @@ class PatientExaminationsDisplayView(LoginRequiredMixin, generic.DetailView):
     model = Patient
     template_name = "patients/examinations.html"
 
-    # def check_required_examinations(self, **kwargs):
-    #    diet_recommendations = DietRecommendation.objects.all().filter(
-    #        patient=self.get_object()
-    #    )
-    #    diet = diet_recommendations.first()
-    #    print(" ------ diet.first ", diet.created)
+    def need_for_morning_diet_recommendation(self, **kwargs):
+        recommendations = DietRecommendation.objects.all()
+        recommendations = recommendations.filter(patient=self.get_object(),)
+        recommendations = recommendations.filter(created__date=date.today(),)
+        if recommendations.exists():
+            return False
+        else:
+            return True
 
-    #    any_examination_required = True
-    #    return any_examination_required
+    def need_for_morning_faeces_examination(self, **kwargs):
+        examinations = FaecesExamination.objects.all()
+        examinations = examinations.filter(patient=self.get_object(),)
+        examinations = examinations.filter(created__date=date.today(),)
+        if examinations.exists():
+            return False
+        else:
+            return True
+
+    def need_for_morning_pressure_examination(self, **kwargs):
+        examinations = PressureExamination.objects.all()
+        examinations = examinations.filter(patient=self.get_object(),)
+        examinations = examinations.filter(created__date=date.today(),)
+        if examinations.exists():
+            return False
+        else:
+            return True
+
+    def need_for_morning_pulse_examination(self, **kwargs):
+        examinations = PulseExamination.objects.all()
+        examinations = examinations.filter(patient=self.get_object(),)
+        examinations = examinations.filter(created__date=date.today(),)
+        if examinations.exists():
+            return False
+        else:
+            return True
+
+    def need_for_morning_temperature_examination(self, **kwargs):
+        temp_examinations = TemperatureExamination.objects.all()
+        temp_examinations = temp_examinations.filter(patient=self.get_object(),)
+        temp_examinations = temp_examinations.filter(created__date=date.today(),)
+        if temp_examinations.exists():
+            return False
+        else:
+            return True
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["diet_form"] = DietRecommendationForm()
-        context["faeces_form"] = FaecesExaminationForm()
-        context["pressure_form"] = PressureExaminationForm()
-        context["pulse_form"] = PulseExaminationForm()
-        context["temperature_form"] = TemperatureExaminationForm()
-        # context["examinations_required"] = self.check_required_examinations()
+        if self.need_for_morning_diet_recommendation():
+            context["diet_form"] = DietRecommendationForm()
+        if self.need_for_morning_faeces_examination():
+            context["faeces_form"] = FaecesExaminationForm()
+        if self.need_for_morning_temperature_examination():
+            context["temperature_form"] = TemperatureExaminationForm()
+        if self.need_for_morning_pressure_examination():
+            context["pressure_form"] = PressureExaminationForm()
+        if self.need_for_morning_pulse_examination():
+            context["pulse_form"] = PulseExaminationForm()
         return context
 
 

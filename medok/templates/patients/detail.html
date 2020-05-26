@@ -5,8 +5,7 @@
 {% block content %}
 <div class="vw-100">
   <h1>{{ patient.name }} {{ patient.surname }}</h1>
-  <h3>Badania wymagane</h3>
-  <a class="btn btn-outline-success" href="{% url 'patients:examinations' patient.pk %}" role="button">Dodaj badanie</a>
+  <a class="btn btn-outline-success" href="{% url 'patients:examinations' patient.pk %}" role="button">Badania wymagane</a>
   <br><br>
   <h3>Badania dodatkowe</h3>
   <h2>KGO</h2>
