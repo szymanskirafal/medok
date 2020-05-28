@@ -4,11 +4,13 @@
 
 {% block content %}
 <div class="vw-100">
-  <h1>{{ patient.name }} {{ patient.surname }}</h1>
   <div class="container">
+  <h1>{{ patient.name }} {{ patient.surname }}</h1>
+
+    <h3>Dużur {{ shift_name }}</h3>
+    <br><br>
     <div class="row">
       <div class="col">
-        <h3>RANO</h3>
         <h5>Badania do zrobienia</h5>
         <br><br>
         {% if temperature_form %}
@@ -53,9 +55,17 @@
         {% endif %}
       </div>
       <div class="col">
-        <h3>WIECZÓR</h3>
-        <h5>Badania do zrobienia</h5>
-      </div>
+        <h5>Badania dodatkowe</h5>
+
+        <a class="btn btn-outline-secondary" href="{% url 'patients:examinations' patient.pk %}" role="button">Temperatura</a>
+
+        <a class="btn btn-outline-secondary" href="{% url 'patients:examinations' patient.pk %}" role="button">Tętno</a>
+
+        <a class="btn btn-outline-secondary" href="{% url 'patients:examinations' patient.pk %}" role="button">Ciśnienie</a>
+
+        <a class="btn btn-outline-secondary" href="{% url 'patients:examinations' patient.pk %}" role="button">Stolec</a>
+
+        <a class="btn btn-outline-secondary" href="{% url 'patients:examinations' patient.pk %}" role="button">Dieta</a>
     </div>
   </div>
 </div>

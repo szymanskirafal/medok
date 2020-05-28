@@ -15,6 +15,12 @@ class TimeStampedModel(models.Model):
 class Examination(TimeStampedModel):
     made_by = models.ForeignKey(User, on_delete=models.CASCADE,)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE,)
+    day_shift = models.BooleanField(default=False)
+    night_shift = models.BooleanField(default=False)
+    additional = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
 
 
 class DietRecommendation(Examination):

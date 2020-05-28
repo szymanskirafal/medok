@@ -21,6 +21,7 @@ from examinations.models import (
 
 from .forms import PatientForm
 from .models import Patient
+from .utils import check_shift
 
 
 class PatientCreateView(LoginRequiredMixin, generic.CreateView):
@@ -51,63 +52,121 @@ class PatientExaminationsDisplayView(LoginRequiredMixin, generic.DetailView):
     model = Patient
     template_name = "patients/examinations.html"
 
-    def need_for_morning_diet_recommendation(self, **kwargs):
-        recommendations = DietRecommendation.objects.all()
-        recommendations = recommendations.filter(patient=self.get_object(),)
-        recommendations = recommendations.filter(created__date=date.today(),)
-        if recommendations.exists():
+    def need_for_diet_recommendation(self, **kwargs):
+        examinations = DietRecommendation.objects.all()
+        examinations = examinations.filter(patient=self.get_object(),)
+        examinations = examinations.filter(created__date=date.today(),)
+        shift = check_shift()
+        if shift == "night":
+            night_shift = True
+            day_shift = False
+        else:
+            night_shift = False
+            day_shift = True
+        examinations = examinations.filter(day_shift=day_shift)
+        examinations = examinations.filter(night_shift=night_shift)
+        if examinations.exists():
             return False
         else:
             return True
 
-    def need_for_morning_faeces_examination(self, **kwargs):
+    def need_for_faeces_examination(self, **kwargs):
         examinations = FaecesExamination.objects.all()
         examinations = examinations.filter(patient=self.get_object(),)
         examinations = examinations.filter(created__date=date.today(),)
+        shift = check_shift()
+        if shift == "night":
+            night_shift = True
+            day_shift = False
+        else:
+            night_shift = False
+            day_shift = True
+        examinations = examinations.filter(day_shift=day_shift)
+        examinations = examinations.filter(night_shift=night_shift)
         if examinations.exists():
             return False
         else:
             return True
 
-    def need_for_morning_pressure_examination(self, **kwargs):
+    def need_for_pressure_examination(self, **kwargs):
         examinations = PressureExamination.objects.all()
         examinations = examinations.filter(patient=self.get_object(),)
         examinations = examinations.filter(created__date=date.today(),)
+        shift = check_shift()
+        if shift == "night":
+            night_shift = True
+            day_shift = False
+        else:
+            night_shift = False
+            day_shift = True
+        examinations = examinations.filter(day_shift=day_shift)
+        examinations = examinations.filter(night_shift=night_shift)
         if examinations.exists():
             return False
         else:
             return True
 
-    def need_for_morning_pulse_examination(self, **kwargs):
+    def need_for_pulse_examination(self, **kwargs):
         examinations = PulseExamination.objects.all()
         examinations = examinations.filter(patient=self.get_object(),)
         examinations = examinations.filter(created__date=date.today(),)
+        shift = check_shift()
+        if shift == "night":
+            night_shift = True
+            day_shift = False
+        else:
+            night_shift = False
+            day_shift = True
+        examinations = examinations.filter(day_shift=day_shift)
+        examinations = examinations.filter(night_shift=night_shift)
         if examinations.exists():
             return False
         else:
             return True
 
-    def need_for_morning_temperature_examination(self, **kwargs):
-        temp_examinations = TemperatureExamination.objects.all()
-        temp_examinations = temp_examinations.filter(patient=self.get_object(),)
-        temp_examinations = temp_examinations.filter(created__date=date.today(),)
-        if temp_examinations.exists():
+    def need_for_temperature_examination(self, **kwargs):
+        examinations = TemperatureExamination.objects.all()
+        examinations = examinations.filter(patient=self.get_object(),)
+        examinations = examinations.filter(created__date=date.today(),)
+        shift = check_shift()
+        if shift == "night":
+            night_shift = True
+            day_shift = False
+        else:
+            night_shift = False
+            day_shift = True
+        examinations = examinations.filter(day_shift=day_shift)
+        examinations = examinations.filter(night_shift=night_shift)
+        if examinations.exists():
             return False
         else:
             return True
 
+    def get_shift_name(self):
+        shift = check_shift()
+        print(" ---- check shift")
+        if shift == "night":
+            shift_name = "Wieczorny"
+            print(" ---- night")
+        else:
+            shift_name = "Ranny"
+            print(" ---- day")
+        print(" ---- shift name is ", shift_name)
+        return shift_name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.need_for_morning_diet_recommendation():
+        if self.need_for_diet_recommendation():
             context["diet_form"] = DietRecommendationForm()
-        if self.need_for_morning_faeces_examination():
+        if self.need_for_faeces_examination():
             context["faeces_form"] = FaecesExaminationForm()
-        if self.need_for_morning_temperature_examination():
-            context["temperature_form"] = TemperatureExaminationForm()
-        if self.need_for_morning_pressure_examination():
+        if self.need_for_pressure_examination():
             context["pressure_form"] = PressureExaminationForm()
-        if self.need_for_morning_pulse_examination():
+        if self.need_for_pulse_examination():
             context["pulse_form"] = PulseExaminationForm()
+        if self.need_for_temperature_examination():
+            context["temperature_form"] = TemperatureExaminationForm()
+        context["shift_name"] = self.get_shift_name()
         return context
 
 
@@ -129,50 +188,97 @@ class PatientExaminationMadeView(
 
         diet_form = self.get_form(form_class=self.diet_form_class)
         if diet_form.is_valid():
+            shift = check_shift()
+            if shift == "night":
+                night_shift = True
+                day_shift = False
+            else:
+                night_shift = False
+                day_shift = True
             DietRecommendation.objects.create(
                 made_by=self.request.user,
                 patient=self.object,
                 diet=diet_form.cleaned_data["diet"],
+                day_shift=day_shift,
+                night_shift=night_shift,
             )
             return self.form_valid(diet_form)
 
         faeces_form = self.get_form(form_class=self.faeces_form_class)
         if faeces_form.is_valid():
+            shift = check_shift()
+            if shift == "night":
+                night_shift = True
+                day_shift = False
+            else:
+                night_shift = False
+                day_shift = True
             FaecesExamination.objects.create(
                 made_by=self.request.user,
                 patient=self.object,
                 faeces=faeces_form.cleaned_data["faeces"],
+                day_shift=day_shift,
+                night_shift=night_shift,
             )
             return self.form_valid(faeces_form)
 
         pressure_form = self.get_form(form_class=self.pressure_form_class)
         if pressure_form.is_valid():
+            shift = check_shift()
+            if shift == "night":
+                night_shift = True
+                day_shift = False
+            else:
+                night_shift = False
+                day_shift = True
+
             PressureExamination.objects.create(
                 made_by=self.request.user,
                 patient=self.object,
                 systole=pressure_form.cleaned_data["systole"],
                 diastole=pressure_form.cleaned_data["diastole"],
+                day_shift=day_shift,
+                night_shift=night_shift,
             )
             return self.form_valid(pressure_form)
 
         pulse_form = self.get_form(form_class=self.pulse_form_class)
         if pulse_form.is_valid():
+            shift = check_shift()
+            if shift == "night":
+                night_shift = True
+                day_shift = False
+            else:
+                night_shift = False
+                day_shift = True
+
             PulseExamination.objects.create(
                 made_by=self.request.user,
                 patient=self.object,
                 pulse=pulse_form.cleaned_data["pulse"],
+                day_shift=day_shift,
+                night_shift=night_shift,
             )
             return self.form_valid(pulse_form)
 
         temperature_form = self.get_form(form_class=self.temperature_form_class)
         if temperature_form.is_valid():
+            shift = check_shift()
+            if shift == "night":
+                night_shift = True
+                day_shift = False
+            else:
+                night_shift = False
+                day_shift = True
+
             TemperatureExamination.objects.create(
                 made_by=self.request.user,
                 patient=self.object,
                 temperature=temperature_form.cleaned_data["temperature"],
+                day_shift=day_shift,
+                night_shift=night_shift,
             )
             return self.form_valid(temperature_form)
-
         else:
             return self.form_invalid(temperature_form)
 

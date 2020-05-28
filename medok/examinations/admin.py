@@ -1,3 +1,34 @@
-# from django.contrib import admin
+from django.contrib import admin
 
-# Register your models here.
+from .models import (
+    DietRecommendation,
+    FaecesExamination,
+    PressureExamination,
+    PulseExamination,
+    TemperatureExamination,
+)
+
+
+@admin.register(DietRecommendation)
+class DietRecommendationAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(FaecesExamination)
+class FaecesExaminationAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(PressureExamination)
+class PressureExaminationAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(PulseExamination)
+class PulseExaminationAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(TemperatureExamination)
+class TemperatureExaminationAdmin(admin.ModelAdmin):
+    pass
