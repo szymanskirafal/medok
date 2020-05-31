@@ -57,15 +57,13 @@
       <div class="col">
         <h5>Badania dodatkowe</h5>
 
-        <a class="btn btn-outline-secondary" href="{% url 'patients:examinations' patient.pk %}" role="button">Temperatura</a>
+        <a class="btn btn-outline-secondary" href="{% url 'examinations:additional-temperature' patient.pk %}" role="button">Temperatura</a>
 
-        <a class="btn btn-outline-secondary" href="{% url 'patients:examinations' patient.pk %}" role="button">Tętno</a>
+        <a class="btn btn-outline-secondary" href="{% url 'examinations:additional-pulse' patient.pk %}" role="button">Tętno</a>
 
-        <a class="btn btn-outline-secondary" href="{% url 'patients:examinations' patient.pk %}" role="button">Ciśnienie</a>
+        <a class="btn btn-outline-secondary" href="{% url 'examinations:additional-pressure' patient.pk %}" role="button">Ciśnienie</a>
 
-        <a class="btn btn-outline-secondary" href="{% url 'patients:examinations' patient.pk %}" role="button">Stolec</a>
-
-        <a class="btn btn-outline-secondary" href="{% url 'patients:examinations' patient.pk %}" role="button">Dieta</a>
+        <a class="btn btn-outline-secondary" href="{% url 'examinations:additional-faeces' patient.pk %}" role="button">Stolec</a>
     </div>
   </div>
 </div>

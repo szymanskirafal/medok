@@ -56,6 +56,7 @@ class PatientExaminationsDisplayView(LoginRequiredMixin, generic.DetailView):
         examinations = DietRecommendation.objects.all()
         examinations = examinations.filter(patient=self.get_object(),)
         examinations = examinations.filter(created__date=date.today(),)
+        examinations = examinations.filter(additional=False)
         shift = check_shift()
         if shift == "night":
             night_shift = True
@@ -74,6 +75,7 @@ class PatientExaminationsDisplayView(LoginRequiredMixin, generic.DetailView):
         examinations = FaecesExamination.objects.all()
         examinations = examinations.filter(patient=self.get_object(),)
         examinations = examinations.filter(created__date=date.today(),)
+        examinations = examinations.filter(additional=False)
         shift = check_shift()
         if shift == "night":
             night_shift = True
@@ -92,6 +94,7 @@ class PatientExaminationsDisplayView(LoginRequiredMixin, generic.DetailView):
         examinations = PressureExamination.objects.all()
         examinations = examinations.filter(patient=self.get_object(),)
         examinations = examinations.filter(created__date=date.today(),)
+        examinations = examinations.filter(additional=False)
         shift = check_shift()
         if shift == "night":
             night_shift = True
@@ -110,6 +113,7 @@ class PatientExaminationsDisplayView(LoginRequiredMixin, generic.DetailView):
         examinations = PulseExamination.objects.all()
         examinations = examinations.filter(patient=self.get_object(),)
         examinations = examinations.filter(created__date=date.today(),)
+        examinations = examinations.filter(additional=False)
         shift = check_shift()
         if shift == "night":
             night_shift = True
@@ -128,6 +132,7 @@ class PatientExaminationsDisplayView(LoginRequiredMixin, generic.DetailView):
         examinations = TemperatureExamination.objects.all()
         examinations = examinations.filter(patient=self.get_object(),)
         examinations = examinations.filter(created__date=date.today(),)
+        examinations = examinations.filter(additional=False)
         shift = check_shift()
         if shift == "night":
             night_shift = True
@@ -144,14 +149,10 @@ class PatientExaminationsDisplayView(LoginRequiredMixin, generic.DetailView):
 
     def get_shift_name(self):
         shift = check_shift()
-        print(" ---- check shift")
         if shift == "night":
             shift_name = "Wieczorny"
-            print(" ---- night")
         else:
             shift_name = "Ranny"
-            print(" ---- day")
-        print(" ---- shift name is ", shift_name)
         return shift_name
 
     def get_context_data(self, **kwargs):
@@ -289,4 +290,4 @@ class PatientExaminationMadeView(
 class PatientsListView(LoginRequiredMixin, generic.ListView):
     context_object_name = "patients"
     model = Patient
-    template_name = "patients/list.html"
+    template_name = "patients/patients.html"
