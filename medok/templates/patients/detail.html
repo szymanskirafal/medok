@@ -4,102 +4,73 @@
 
 {% block content %}
 <div class="vw-100">
-  <h1>{{ patient.name }} {{ patient.surname }}</h1>
-  <a class="btn btn-outline-success" href="{% url 'patients:examinations' patient.pk %}" role="button">Badania</a>
-  <br><br>
-  <h2>KGO</h2>
+  <div class="row">
+    <div class="col">
+      <div class="row">
+        <div class="col">
+          <h3>{{ patient.name }} {{ patient.surname }}</h3>
+          <p>PESEL: {{ patient.pesel }}</p>
+          <p>KS GŁ: {{ patient.nr_in_main_book }}, KS ODD: {{ patient.nr_in_ward_book }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <h1>KARTA GORĄCZKOWA ogólna</h1>
+    </div>
+    <div class="col">
+    </div>
+  </div>
+
   <table class="table table-bordered table-hover table-sm font-weight-lighter">
   <thead class="font-weight-lighter">
     <tr>
       <th scope="col" colspan="2" class="font-weight-lighter">Data</th>
+      {% for day in days %}
+        <td colspan="2" class="font-weight-lighter">{{ day }}</td>
+      {% endfor %}
     </tr>
-  </thead>
-  <thead>
-    <tr class="font-weight-lighter">
-      <th scope="col" class="font-weight-lighter">Tętno</th>
-      <th scope="col">Ciepło</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
-      <th scope="col">R</th>
-      <th scope="col">W</th>
+    <tr>
+      <th scope="col" colspan="2" class="font-weight-lighter">Dyżur</th>
+      {% for shift in shifts %}
+        <td class="font-weight-lighter">{{ shift }}</td>
+      {% endfor %}
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th scope="row">1</th>
-      <td>37</td>
-      <td>37</td>
-      <td>38</td>
+      <th scope="col" colspan="2" class="font-weight-lighter">Ciepło</th>
+      {% for temp in temps %}
+        <td class="font-weight-lighter">{{ temp }}</td>
+      {% endfor %}
     </tr>
     <tr>
-      <th scope="row">2</th>
-      <td>37</td>
-      <td>38</td>
-      <td>36</td>
+      <th scope="col" colspan="2" class="font-weight-lighter">Tętno</th>
+      {% for pulse in pulses %}
+        <td class="font-weight-lighter">{{ pulse }}</td>
+      {% endfor %}
     </tr>
     <tr>
-      <th scope="row">3</th>
-      <td>37</td>
-      <td>36</td>
+      <th scope="col" colspan="2" class="font-weight-lighter">Ciśnienie</th>
+      {% for pressure in pressures %}
+        <td class="font-weight-lighter">{{ pressure }}</td>
+      {% endfor %}
     </tr>
+    <tr>
+      <th scope="col" colspan="2" class="font-weight-lighter">Dieta</th>
+      {% for diet in diets %}
+        <td class="font-weight-lighter">{{ diet }}</td>
+      {% endfor %}
+    </tr>
+    <tr>
+      <th scope="col" colspan="2" class="font-weight-lighter">Stolec</th>
+      {% for faeces in faeceses %}
+        <td class="font-weight-lighter">{{ faeces }}</td>
+      {% endfor %}
+    </tr>
+
   </tbody>
 </table>
+<a class="btn btn-outline-success" href="{% url 'patients:examinations' patient.pk %}" role="button">Badania</a>
 <a class="btn btn-outline-success" href="#" role="button">Drukuj</a>
 </div>
 <br><br>

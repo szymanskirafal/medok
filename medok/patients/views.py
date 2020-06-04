@@ -36,6 +36,174 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
     model = Patient
     template_name = "patients/detail.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["days"] = self.get_days()
+        context["diets"] = self.get_diets()
+        context["faeceses"] = self.get_faeceses()
+        context["pressures"] = self.get_pressures()
+        context["pulses"] = self.get_pulses()
+        context["shifts"] = self.get_shifts()
+        context["temps"] = self.get_temps()
+        return context
+
+    def get_days(self):
+        days = list(n for n in range(1, 31))
+        return days
+
+    def get_shifts(self):
+        shifts = []
+        for day in self.get_days():
+            shifts.append("R")
+            shifts.append("W")
+        return shifts
+
+    def get_diets(self):
+        results = []
+        today = date.today()
+        exams = DietRecommendation.objects.all()
+        exams = exams.filter(patient=self.get_object())
+        exams = exams.filter(additional=False)
+        exams = exams.filter(created__year=today.year)
+        exams = exams.filter(created__month=today.month)
+        exams = exams.order_by("created")
+        days_exams_was_made = set()
+        for exam in exams:
+            days_exams_was_made.add(exam.created.day)
+        print("### days_exams_was_made ", days_exams_was_made)
+        for day in self.get_days():
+            print("### day ", day)
+            if day in days_exams_was_made:
+                for exam in exams:
+                    if exam.created.day == day:
+                        print("---- date ", exam.created)
+                        print("---- shift day? ", exam.day_shift)
+                        print("---- shift day? ", exam.night_shift)
+                        # morning_exam_was_made = False
+                        if exam.day_shift:
+                            results.append(exam.get_diet_display())
+                            morning_exam_was_made = True
+                        elif exam.night_shift and morning_exam_was_made:
+                            results.append(exam.get_diet_display())
+                        else:
+                            results.append("BRAK")
+                            results.append(exam.get_diet_display())
+            else:
+                results.append("BRAK")
+                results.append("BRAK")
+            # print('### results ', results)
+        return results
+
+    def get_faeceses(self):
+        results = []
+        today = date.today()
+        exams = FaecesExamination.objects.all()
+        exams = exams.filter(patient=self.get_object())
+        exams = exams.filter(additional=False)
+        exams = exams.filter(created__year=today.year)
+        exams = exams.filter(created__month=today.month)
+        exams = exams.order_by("created")
+        days_exams_was_made = set()
+        for exam in exams:
+            days_exams_was_made.add(exam.created.day)
+        for day in self.get_days():
+            if day in days_exams_was_made:
+                for exam in exams:
+                    if exam.created.day == day:
+                        if exam.day_shift:
+                            results.append(exam.faeces)
+                            morning_exam_was_made = True
+                        if exam.night_shift and morning_exam_was_made:
+                            results.append("BRAK")
+                            results.append(exam.faeces)
+            else:
+                results.append("BRAK")
+                results.append("BRAK")
+        return results
+
+    def get_pressures(self):
+        results = []
+        today = date.today()
+        exams = PressureExamination.objects.all()
+        exams = exams.filter(patient=self.get_object())
+        exams = exams.filter(additional=False)
+        exams = exams.filter(created__year=today.year)
+        exams = exams.filter(created__month=today.month)
+        exams = exams.order_by("created")
+        days_exams_was_made = set()
+        for exam in exams:
+            days_exams_was_made.add(exam.created.day)
+        for day in self.get_days():
+            if day in days_exams_was_made:
+                for exam in exams:
+                    if exam.created.day == day:
+                        if exam.day_shift:
+                            pressure = str(exam.systole) + "/" + str(exam.diastole)
+                            results.append(pressure)
+                            morning_exam_was_made = True
+                        if exam.night_shift and morning_exam_was_made:
+                            results.append("BRAK")
+                            pressure = str(exam.systole) + "/" + str(exam.diastole)
+                            results.append(pressure)
+            else:
+                results.append("BRAK")
+                results.append("BRAK")
+        return results
+
+    def get_pulses(self):
+        results = []
+        today = date.today()
+        exams = PulseExamination.objects.all()
+        exams = exams.filter(patient=self.get_object())
+        exams = exams.filter(additional=False)
+        exams = exams.filter(created__year=today.year)
+        exams = exams.filter(created__month=today.month)
+        exams = exams.order_by("created")
+        days_exams_was_made = set()
+        for exam in exams:
+            days_exams_was_made.add(exam.created.day)
+        for day in self.get_days():
+            if day in days_exams_was_made:
+                for exam in exams:
+                    if exam.created.day == day:
+                        if exam.day_shift:
+                            results.append(exam.pulse)
+                            morning_exam_was_made = True
+                        if exam.night_shift and morning_exam_was_made:
+                            results.append("BRAK")
+                            results.append(exam.pulse)
+            else:
+                results.append("BRAK")
+                results.append("BRAK")
+        return results
+
+    def get_temps(self):
+        results = []
+        today = date.today()
+        exams = TemperatureExamination.objects.all()
+        exams = exams.filter(patient=self.get_object())
+        exams = exams.filter(additional=False)
+        exams = exams.filter(created__year=today.year)
+        exams = exams.filter(created__month=today.month)
+        exams = exams.order_by("created")
+        days_exams_was_made = set()
+        for exam in exams:
+            days_exams_was_made.add(exam.created.day)
+        for day in self.get_days():
+            if day in days_exams_was_made:
+                for exam in exams:
+                    if exam.created.day == day:
+                        if exam.day_shift:
+                            results.append(exam.temperature)
+                            morning_exam_was_made = True
+                        if exam.night_shift and morning_exam_was_made:
+                            results.append("BRAK")
+                            results.append(exam.temperature)
+            else:
+                results.append("BRAK")
+                results.append("BRAK")
+        return results
+
 
 class PatientExaminationsDetailView(View):
     def get(self, request, *args, **kwargs):
@@ -266,9 +434,11 @@ class PatientExaminationMadeView(
         if temperature_form.is_valid():
             shift = check_shift()
             if shift == "night":
+                print("---- night")
                 night_shift = True
                 day_shift = False
             else:
+                print("---- day")
                 night_shift = False
                 day_shift = True
 

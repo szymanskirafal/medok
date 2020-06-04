@@ -36,6 +36,9 @@ class DietRecommendation(Examination):
         max_length=2, choices=TYPE_OF_DIET, default=NO, verbose_name="Dieta",
     )
 
+    def __str__(self):
+        return self.get_diet_display()
+
 
 class FaecesExamination(Examination):
     faeces = models.PositiveSmallIntegerField(
