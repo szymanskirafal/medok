@@ -1,17 +1,15 @@
-from datetime import timedelta
-
 from django.utils import timezone
 
 
 def check_shift():
-    now_in_warsaw = timezone.now() + timedelta(hours=2)
+    now = timezone.now()
     print("we here")
-    if now_in_warsaw.hour > 19:
-        if now_in_warsaw.hour > 20:
+    if now.hour > 17:
+        if now.hour > 18:
             shift = "night"
 
         else:
-            if now_in_warsaw.minute > 29:
+            if now.minute > 29:
                 shift = "night"
             else:
                 shift = "day"

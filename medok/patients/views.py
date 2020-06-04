@@ -3,6 +3,7 @@ from datetime import date
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.views import View, generic
 from examinations.forms import (
     DietRecommendationForm,
@@ -76,7 +77,8 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
             if day in days_exams_was_made:
                 for exam in exams:
                     if exam.created.day == day:
-                        print("---- date ", exam.created)
+                        print("---- created ", exam.created)
+                        print("---- now ", timezone.now())
                         print("---- shift day? ", exam.day_shift)
                         print("---- shift day? ", exam.night_shift)
                         # morning_exam_was_made = False
