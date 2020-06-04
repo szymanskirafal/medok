@@ -12,4 +12,5 @@ urlpatterns = [
         view=views.PatientExaminationsDetailView.as_view(),
         name="examinations",
     ),
+    path("pdf/", view=views.write_pdf_view, name="write_pdf_view"),
 ]

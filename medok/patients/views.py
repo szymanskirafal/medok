@@ -1,7 +1,8 @@
 from datetime import date
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseForbidden
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse, HttpResponseForbidden
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views import View, generic
@@ -19,10 +20,33 @@ from examinations.models import (
     PulseExamination,
     TemperatureExamination,
 )
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
 from .forms import PatientForm
 from .models import Patient
 from .utils import check_shift
+
+
+def write_pdf_view(request):
+    doc = SimpleDocTemplate("/tmp/kgo-test.pdf")
+    styles = getSampleStyleSheet()
+    Story = [Spacer(1, 2 * inch)]
+    style = styles["Normal"]
+    bogustext = "Testowa strona wydruku KGO"
+    p = Paragraph(bogustext, style)
+    Story.append(p)
+    Story.append(Spacer(1, 0.2 * inch))
+    doc.build(Story)
+
+    fs = FileSystemStorage("/tmp")
+    with fs.open("kgo-test.pdf") as pdf:
+        response = HttpResponse(pdf, content_type="application/pdf")
+        response["Content-Disposition"] = 'attachment; filename="kgo-test.pdf"'
+        return response
+
+    return response
 
 
 class PatientCreateView(LoginRequiredMixin, generic.CreateView):

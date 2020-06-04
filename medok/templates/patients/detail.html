@@ -71,7 +71,7 @@
   </tbody>
 </table>
 <a class="btn btn-outline-success" href="{% url 'patients:examinations' patient.pk %}" role="button">Badania</a>
-<a class="btn btn-outline-success" href="#" role="button">Drukuj</a>
+<a class="btn btn-outline-success" href="{% url 'patients:write_pdf_view' %}" role="button">Drukuj</a>
 </div>
 <br><br>
 {% endblock content %}
