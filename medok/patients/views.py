@@ -90,34 +90,26 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
         exams = exams.filter(additional=False)
         exams = exams.filter(created__year=today.year)
         exams = exams.filter(created__month=today.month)
-        exams_created_this_month = exams.order_by("created")
+        exams = exams.order_by("created")
         days_exams_was_made = set()
-        for exam in exams_created_this_month:
+        for exam in exams:
             days_exams_was_made.add(exam.created.day)
-            print("### exam created date: ", exam.created)
         for day in self.get_days():
-            print("### day ", day)
             exams_this_day = []
-            for exam in exams_created_this_month:
+            for exam in exams:
                 if exam.created.day == day:
                     exams_this_day.append(exam)
-            print(" -- exams this day", len(exams_this_day))
             if len(exams_this_day) == 2:
-                print(" -- 2 exams today")
                 for exam in exams_this_day:
                     if exam.day_shift:
                         results.append(exam.get_diet_display())
                     if exam.night_shift:
                         results.append(exam.get_diet_display())
             elif len(exams_this_day) == 1:
-                print(" -- 1 exam today")
                 if exam.day_shift:
-                    print(" -- day shift: ", exam.day_shift)
-                    print(" -- night shift: ", exam.night_shift)
                     results.append(exam.get_diet_display())
                     results.append("BRAK")
                 if exam.night_shift:
-                    print(" -- it was night exam")
                     results.append("BRAK")
                     results.append(exam.get_diet_display())
             else:
@@ -138,15 +130,23 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
         for exam in exams:
             days_exams_was_made.add(exam.created.day)
         for day in self.get_days():
-            if day in days_exams_was_made:
-                for exam in exams:
-                    if exam.created.day == day:
-                        if exam.day_shift:
-                            results.append(exam.faeces)
-                            morning_exam_was_made = True
-                        if exam.night_shift and morning_exam_was_made:
-                            results.append("BRAK")
-                            results.append(exam.faeces)
+            exams_this_day = []
+            for exam in exams:
+                if exam.created.day == day:
+                    exams_this_day.append(exam)
+            if len(exams_this_day) == 2:
+                for exam in exams_this_day:
+                    if exam.day_shift:
+                        results.append(exam.faeces)
+                    if exam.night_shift:
+                        results.append(exam.faeces)
+            elif len(exams_this_day) == 1:
+                if exam.day_shift:
+                    results.append(exam.faeces)
+                    results.append("BRAK")
+                if exam.night_shift:
+                    results.append("BRAK")
+                    results.append(exam.faeces)
             else:
                 results.append("BRAK")
                 results.append("BRAK")
@@ -165,17 +165,25 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
         for exam in exams:
             days_exams_was_made.add(exam.created.day)
         for day in self.get_days():
-            if day in days_exams_was_made:
-                for exam in exams:
-                    if exam.created.day == day:
-                        if exam.day_shift:
-                            pressure = str(exam.systole) + "/" + str(exam.diastole)
-                            results.append(pressure)
-                            morning_exam_was_made = True
-                        if exam.night_shift and morning_exam_was_made:
-                            results.append("BRAK")
-                            pressure = str(exam.systole) + "/" + str(exam.diastole)
-                            results.append(pressure)
+            exams_this_day = []
+            for exam in exams:
+                if exam.created.day == day:
+                    exams_this_day.append(exam)
+            if len(exams_this_day) == 2:
+                for exam in exams_this_day:
+                    pressure = str(exam.systole) + "/" + str(exam.diastole)
+                    if exam.day_shift:
+                        results.append(pressure)
+                    if exam.night_shift:
+                        results.append(pressure)
+            elif len(exams_this_day) == 1:
+                pressure = str(exam.systole) + "/" + str(exam.diastole)
+                if exam.day_shift:
+                    results.append(exam.pressure)
+                    results.append("BRAK")
+                if exam.night_shift:
+                    results.append("BRAK")
+                    results.append(exam.pressure)
             else:
                 results.append("BRAK")
                 results.append("BRAK")
@@ -194,15 +202,23 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
         for exam in exams:
             days_exams_was_made.add(exam.created.day)
         for day in self.get_days():
-            if day in days_exams_was_made:
-                for exam in exams:
-                    if exam.created.day == day:
-                        if exam.day_shift:
-                            results.append(exam.pulse)
-                            morning_exam_was_made = True
-                        if exam.night_shift and morning_exam_was_made:
-                            results.append("BRAK")
-                            results.append(exam.pulse)
+            exams_this_day = []
+            for exam in exams:
+                if exam.created.day == day:
+                    exams_this_day.append(exam)
+            if len(exams_this_day) == 2:
+                for exam in exams_this_day:
+                    if exam.day_shift:
+                        results.append(exam.pulse)
+                    if exam.night_shift:
+                        results.append(exam.pulse)
+            elif len(exams_this_day) == 1:
+                if exam.day_shift:
+                    results.append(exam.pulse)
+                    results.append("BRAK")
+                if exam.night_shift:
+                    results.append("BRAK")
+                    results.append(exam.pulse)
             else:
                 results.append("BRAK")
                 results.append("BRAK")
@@ -221,15 +237,23 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
         for exam in exams:
             days_exams_was_made.add(exam.created.day)
         for day in self.get_days():
-            if day in days_exams_was_made:
-                for exam in exams:
-                    if exam.created.day == day:
-                        if exam.day_shift:
-                            results.append(exam.temperature)
-                            morning_exam_was_made = True
-                        if exam.night_shift and morning_exam_was_made:
-                            results.append("BRAK")
-                            results.append(exam.temperature)
+            exams_this_day = []
+            for exam in exams:
+                if exam.created.day == day:
+                    exams_this_day.append(exam)
+            if len(exams_this_day) == 2:
+                for exam in exams_this_day:
+                    if exam.day_shift:
+                        results.append(exam.temperature)
+                    if exam.night_shift:
+                        results.append(exam.temperature)
+            elif len(exams_this_day) == 1:
+                if exam.day_shift:
+                    results.append(exam.temperature)
+                    results.append("BRAK")
+                if exam.night_shift:
+                    results.append("BRAK")
+                    results.append(exam.temperature)
             else:
                 results.append("BRAK")
                 results.append("BRAK")
