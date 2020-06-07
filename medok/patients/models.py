@@ -6,30 +6,30 @@ from django.utils.translation import ugettext_lazy as _
 class Patient(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    name = models.CharField(_("Name"), blank=False, max_length=50)
-    surname = models.CharField(_("Surname"), blank=False, max_length=100)
+    name = models.CharField(_("Imię"), blank=False, max_length=50)
+    surname = models.CharField(_("Nazwisko"), blank=False, max_length=100)
     pesel = models.BigIntegerField(
         _("PESEL"),
         null=False,
         blank=False,
-        default=11223344555,
+        # default=11223344555,
         validators=[
             validators.MinValueValidator(10000000000),
             validators.MaxValueValidator(99999999999),
         ],
     )
-    street = models.CharField(_("Street"), blank=True, max_length=100)
-    nr = models.PositiveSmallIntegerField(_("Number"), blank=True)
-    zip_code = models.CharField(_("Zip Code"), blank=True, max_length=6)
-    city = models.CharField(_("City"), blank=True, max_length=100)
-    birthday = models.DateField(blank=True,)
-    nr_in_main_book = models.PositiveSmallIntegerField(
-        _("Number in The Main Book"), blank=True
+    street = models.CharField(_("Ulica"), blank=True, max_length=100)
+    nr = models.PositiveSmallIntegerField(_("Numer"), blank=True)
+    zip_code = models.CharField(_("Kod pocztowy"), blank=True, max_length=6)
+    city = models.CharField(_("Miejscowość"), blank=True, max_length=100)
+    birthday = models.DateField(_("Data urodzenia"), blank=True,)
+    nr_in_main_book = models.CharField(
+        _("Numer w Książce Głównej"), blank=True, max_length=100,
     )
-    nr_in_ward_book = models.PositiveSmallIntegerField(
-        _("Number in The Ward Book"), blank=True
+    nr_in_ward_book = models.CharField(
+        _("Numer w Książce Oddziałowej"), blank=True, max_length=100,
     )
-    agreed_to_tests = models.BooleanField(_("Agreed to the tests"), default=False)
+    agreed_to_tests = models.BooleanField(_("Zgoda na wykonanie badań"), default=False)
 
     def get_absolute_url(self):
         pass

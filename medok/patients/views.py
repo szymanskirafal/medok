@@ -51,7 +51,7 @@ def write_pdf_view(request):
 class PatientCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = PatientForm
     model = Patient
-    success_url = reverse_lazy("patients:list")
+    success_url = reverse_lazy("patients:patients")
     template_name = "patients/create.html"
 
 

@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, TextInput
 
 from .models import Patient
 
@@ -19,3 +19,6 @@ class PatientForm(ModelForm):
             "nr_in_ward_book",
             "agreed_to_tests",
         ]
+        widgets = {
+            "birthday": TextInput(attrs={"placeholder": "1950-03-08"}),
+        }
