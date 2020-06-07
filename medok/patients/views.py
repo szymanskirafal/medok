@@ -4,7 +4,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, HttpResponseForbidden
 from django.urls import reverse, reverse_lazy
-from django.utils import timezone
 from django.views import View, generic
 from examinations.forms import (
     DietRecommendationForm,
@@ -91,33 +90,39 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
         exams = exams.filter(additional=False)
         exams = exams.filter(created__year=today.year)
         exams = exams.filter(created__month=today.month)
-        exams = exams.order_by("created")
+        exams_created_this_month = exams.order_by("created")
         days_exams_was_made = set()
-        for exam in exams:
+        for exam in exams_created_this_month:
             days_exams_was_made.add(exam.created.day)
-        print("### days_exams_was_made ", days_exams_was_made)
+            print("### exam created date: ", exam.created)
         for day in self.get_days():
             print("### day ", day)
-            if day in days_exams_was_made:
-                for exam in exams:
-                    if exam.created.day == day:
-                        print("---- created ", exam.created)
-                        print("---- now ", timezone.now())
-                        print("---- shift day? ", exam.day_shift)
-                        print("---- shift day? ", exam.night_shift)
-                        # morning_exam_was_made = False
-                        if exam.day_shift:
-                            results.append(exam.get_diet_display())
-                            morning_exam_was_made = True
-                        elif exam.night_shift and morning_exam_was_made:
-                            results.append(exam.get_diet_display())
-                        else:
-                            results.append("BRAK")
-                            results.append(exam.get_diet_display())
+            exams_this_day = []
+            for exam in exams_created_this_month:
+                if exam.created.day == day:
+                    exams_this_day.append(exam)
+            print(" -- exams this day", len(exams_this_day))
+            if len(exams_this_day) == 2:
+                print(" -- 2 exams today")
+                for exam in exams_this_day:
+                    if exam.day_shift:
+                        results.append(exam.get_diet_display())
+                    if exam.night_shift:
+                        results.append(exam.get_diet_display())
+            elif len(exams_this_day) == 1:
+                print(" -- 1 exam today")
+                if exam.day_shift:
+                    print(" -- day shift: ", exam.day_shift)
+                    print(" -- night shift: ", exam.night_shift)
+                    results.append(exam.get_diet_display())
+                    results.append("BRAK")
+                if exam.night_shift:
+                    print(" -- it was night exam")
+                    results.append("BRAK")
+                    results.append(exam.get_diet_display())
             else:
                 results.append("BRAK")
                 results.append("BRAK")
-            # print('### results ', results)
         return results
 
     def get_faeceses(self):
