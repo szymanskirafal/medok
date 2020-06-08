@@ -416,14 +416,20 @@ class PatientExaminationMadeView(
         self.object = self.get_object()
 
         diet_form = self.get_form(form_class=self.diet_form_class)
+        faeces_form = self.get_form(form_class=self.faeces_form_class)
+        pressure_form = self.get_form(form_class=self.pressure_form_class)
+        pulse_form = self.get_form(form_class=self.pulse_form_class)
+        temperature_form = self.get_form(form_class=self.temperature_form_class)
+        shift = check_shift()
+
+        if shift == "night":
+            night_shift = True
+            day_shift = False
+        else:
+            night_shift = False
+            day_shift = True
+
         if diet_form.is_valid():
-            shift = check_shift()
-            if shift == "night":
-                night_shift = True
-                day_shift = False
-            else:
-                night_shift = False
-                day_shift = True
             DietRecommendation.objects.create(
                 made_by=self.request.user,
                 patient=self.object,
@@ -431,17 +437,7 @@ class PatientExaminationMadeView(
                 day_shift=day_shift,
                 night_shift=night_shift,
             )
-            return self.form_valid(diet_form)
-
-        faeces_form = self.get_form(form_class=self.faeces_form_class)
         if faeces_form.is_valid():
-            shift = check_shift()
-            if shift == "night":
-                night_shift = True
-                day_shift = False
-            else:
-                night_shift = False
-                day_shift = True
             FaecesExamination.objects.create(
                 made_by=self.request.user,
                 patient=self.object,
@@ -449,18 +445,7 @@ class PatientExaminationMadeView(
                 day_shift=day_shift,
                 night_shift=night_shift,
             )
-            return self.form_valid(faeces_form)
-
-        pressure_form = self.get_form(form_class=self.pressure_form_class)
         if pressure_form.is_valid():
-            shift = check_shift()
-            if shift == "night":
-                night_shift = True
-                day_shift = False
-            else:
-                night_shift = False
-                day_shift = True
-
             PressureExamination.objects.create(
                 made_by=self.request.user,
                 patient=self.object,
@@ -469,18 +454,7 @@ class PatientExaminationMadeView(
                 day_shift=day_shift,
                 night_shift=night_shift,
             )
-            return self.form_valid(pressure_form)
-
-        pulse_form = self.get_form(form_class=self.pulse_form_class)
         if pulse_form.is_valid():
-            shift = check_shift()
-            if shift == "night":
-                night_shift = True
-                day_shift = False
-            else:
-                night_shift = False
-                day_shift = True
-
             PulseExamination.objects.create(
                 made_by=self.request.user,
                 patient=self.object,
@@ -488,20 +462,7 @@ class PatientExaminationMadeView(
                 day_shift=day_shift,
                 night_shift=night_shift,
             )
-            return self.form_valid(pulse_form)
-
-        temperature_form = self.get_form(form_class=self.temperature_form_class)
         if temperature_form.is_valid():
-            shift = check_shift()
-            if shift == "night":
-                print("---- night")
-                night_shift = True
-                day_shift = False
-            else:
-                print("---- day")
-                night_shift = False
-                day_shift = True
-
             TemperatureExamination.objects.create(
                 made_by=self.request.user,
                 patient=self.object,

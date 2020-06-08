@@ -17,39 +17,15 @@
           <form action="" method="post" class="col-5">
             {{ temperature_form|crispy }}
             {% csrf_token %}
-            <input class="btn btn-success" type="submit" value="Zapisz wynik">
-          </form>
-          <br><br>
-        {% endif %}
-        {% if pulse_form %}
-          <form action="" method="post" class="col-5">
             {{ pulse_form|crispy }}
             {% csrf_token %}
-            <input class="btn btn-success" type="submit" value="Zapisz wynik">
-          </form>
-          <br><br>
-        {% endif %}
-        {% if pressure_form %}
-          <form action="" method="post" class="col-5">
             {{ pressure_form|crispy }}
             {% csrf_token %}
-            <input class="btn btn-success" type="submit" value="Zapisz wynik">
-          </form>
-          <br><br>
-        {% endif %}
-        {% if faeces_form %}
-          <form action="" method="post" class="col-5">
             {{ faeces_form|crispy }}
             {% csrf_token %}
-            <input class="btn btn-success" type="submit" value="Zapisz wynik">
-          </form>
-          <br><br>
-        {% endif %}
-        {% if diet_form %}
-          <form action="" method="post" class="col-5">
             {{ diet_form|crispy }}
             {% csrf_token %}
-            <input class="btn btn-success" type="submit" value="Zapisz wynik">
+            <input class="btn btn-success" type="submit" value="Zapisz wyniki">
           </form>
           <br><br>
         {% endif %}
