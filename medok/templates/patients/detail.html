@@ -38,31 +38,31 @@
   </thead>
   <tbody>
     <tr>
-      <th scope="col" colspan="2" class="font-weight-lighter">Ciepło</th>
+      <th scope="col" colspan="2"><a href="{% url 'examinations:historical-temperature' patient.pk %}">Ciepło</a></th>
       {% for temp in temps %}
         <td class="font-weight-lighter">{{ temp }}</td>
       {% endfor %}
     </tr>
     <tr>
-      <th scope="col" colspan="2" class="font-weight-lighter">Tętno</th>
+      <th scope="col" colspan="2"><a href="{% url 'examinations:historical-pulse' patient.pk %}">Tętno</a></th>
       {% for pulse in pulses %}
         <td class="font-weight-lighter">{{ pulse }}</td>
       {% endfor %}
     </tr>
     <tr>
-      <th scope="col" colspan="2" class="font-weight-lighter">Ciśnienie</th>
+      <th scope="col" colspan="2"><a href="{% url 'examinations:historical-pressure' patient.pk %}">Ciśnienie</a></th>
       {% for pressure in pressures %}
         <td class="font-weight-lighter">{{ pressure }}</td>
       {% endfor %}
     </tr>
     <tr>
-      <th scope="col" colspan="2" class="font-weight-lighter">Dieta</th>
+      <th scope="col" colspan="2"><a href="{% url 'examinations:historical-diet' patient.pk %}">Dieta</a></th>
       {% for diet in diets %}
         <td class="font-weight-lighter">{{ diet }}</td>
       {% endfor %}
     </tr>
     <tr>
-      <th scope="col" colspan="2" class="font-weight-lighter">Stolec</th>
+      <th scope="col" colspan="2"><a href="{% url 'examinations:historical-faeces' patient.pk %}">Stolec</a></th>
       {% for faeces in faeceses %}
         <td class="font-weight-lighter">{{ faeces }}</td>
       {% endfor %}

@@ -3,14 +3,15 @@
 
 {% block content %}
 <div class="container">
+
   <h1>Dodatkowe badanie</h1>
   <p>Dla pacjenta {{ patient.name }} {{ patient.surname }}</p>
 
   <form action="#" method="post">
-  {{ form.as_p }}
-  {% csrf_token %}
-  <input class="btn btn-success" type="submit" value="Zapisz wynik">
-</form>
+    {{ form.as_p }}
+    {% csrf_token %}
+    <input class="btn btn-success" type="submit" value="Zapisz wynik">
+  </form>
 
 </div>
 {% endblock content %}

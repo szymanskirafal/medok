@@ -24,4 +24,29 @@ urlpatterns = [
         view=views.TemperatureExaminationCreateView.as_view(),
         name="additional-temperature",
     ),
+    path(
+        "historical/diet/<int:pk>",
+        view=views.DietRecommendationHistoricalListView.as_view(),
+        name="historical-diet",
+    ),
+    path(
+        "historical/faeces/<int:pk>",
+        view=views.FaecesExaminationHistoricalListView.as_view(),
+        name="historical-faeces",
+    ),
+    path(
+        "historical/pulse/<int:pk>",
+        view=views.PulseExaminationHistoricalListView.as_view(),
+        name="historical-pulse",
+    ),
+    path(
+        "historical/pressure/<int:pk>",
+        view=views.PressureExaminationHistoricalListView.as_view(),
+        name="historical-pressure",
+    ),
+    path(
+        "historical/temperature/<int:pk>",
+        view=views.TemperatureExaminationHistoricalListView.as_view(),
+        name="historical-temperature",
+    ),
 ]

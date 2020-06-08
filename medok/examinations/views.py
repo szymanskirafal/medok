@@ -11,6 +11,7 @@ from .forms import (
     TemperatureExaminationForm,
 )
 from .models import (
+    DietRecommendation,
     FaecesExamination,
     PressureExamination,
     PulseExamination,
@@ -132,3 +133,78 @@ class TemperatureExaminationCreateView(LoginRequiredMixin, generic.CreateView):
 
     def get_success_url(self):
         return reverse("patients:detail", kwargs={"pk": self.kwargs["pk"]})
+
+
+class DietRecommendationHistoricalListView(LoginRequiredMixin, generic.ListView):
+    context_object_name = "examinations"
+    model = DietRecommendation
+    template_name = "examinations/historical-diet.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = self.patient
+        return context
+
+    def get_queryset(self):
+        self.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        return DietRecommendation.objects.all().filter(patient=self.patient)
+
+
+class FaecesExaminationHistoricalListView(LoginRequiredMixin, generic.ListView):
+    context_object_name = "examinations"
+    model = FaecesExamination
+    template_name = "examinations/historical-faeces.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = self.patient
+        return context
+
+    def get_queryset(self):
+        self.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        return FaecesExamination.objects.all().filter(patient=self.patient)
+
+
+class PressureExaminationHistoricalListView(LoginRequiredMixin, generic.ListView):
+    context_object_name = "examinations"
+    model = PressureExamination
+    template_name = "examinations/historical-pressure.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = self.patient
+        return context
+
+    def get_queryset(self):
+        self.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        return PressureExamination.objects.all().filter(patient=self.patient)
+
+
+class PulseExaminationHistoricalListView(LoginRequiredMixin, generic.ListView):
+    context_object_name = "examinations"
+    model = PulseExamination
+    template_name = "examinations/historical-pulse.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = self.patient
+        return context
+
+    def get_queryset(self):
+        self.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        return PulseExamination.objects.all().filter(patient=self.patient)
+
+
+class TemperatureExaminationHistoricalListView(LoginRequiredMixin, generic.ListView):
+    context_object_name = "examinations"
+    model = TemperatureExamination
+    template_name = "examinations/historical-temperature.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = self.patient
+        return context
+
+    def get_queryset(self):
+        self.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        return TemperatureExamination.objects.all().filter(patient=self.patient)

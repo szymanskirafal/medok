@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+
+  <h1>Historia pomiarów temperatury</h1>
+  <p>Dla pacjenta {{ patient.name }} {{ patient.surname }}</p>
+  <br><br>
+  {% for exam in examinations %}
+    <p>Data: {{ exam.created }}, wynik: {{ exam.temperature }}, wykonany przez: {{ exam.made_by }}</p>
+  {% endfor %}
+
+
+</div>
+{% endblock content %}
