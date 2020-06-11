@@ -11,7 +11,12 @@ from .models import (
 
 @admin.register(DietRecommendation)
 class DietRecommendationAdmin(admin.ModelAdmin):
-    pass
+    fields = (
+        "created",
+        "made_by",
+        "patient",
+        "diet",
+    )
 
 
 @admin.register(FaecesExamination)

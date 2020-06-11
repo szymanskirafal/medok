@@ -1,11 +1,15 @@
 from django.db import models
+from django.utils import timezone
 from patients.models import Patient
 
 from medok.users.models import User
 
 
 class TimeStampedModel(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
+    really_created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(
+        auto_now_add=False, default=timezone.now, editable=True
+    )
     modified = models.DateTimeField(auto_now=True)
 
     class Meta:
