@@ -16,6 +16,9 @@ class DietRecommendationAdmin(admin.ModelAdmin):
         "made_by",
         "patient",
         "diet",
+        "day_shift",
+        "night_shift",
+        "additional",
     )
 
 
