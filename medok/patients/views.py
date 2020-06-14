@@ -430,49 +430,59 @@ class PatientExaminationMadeView(
             day_shift = True
 
         if diet_form.is_valid():
-            DietRecommendation.objects.create(
-                made_by=self.request.user,
-                patient=self.object,
-                diet=diet_form.cleaned_data["diet"],
-                day_shift=day_shift,
-                night_shift=night_shift,
-            )
-        if faeces_form.is_valid():
-            FaecesExamination.objects.create(
-                made_by=self.request.user,
-                patient=self.object,
-                faeces=faeces_form.cleaned_data["faeces"],
-                day_shift=day_shift,
-                night_shift=night_shift,
-            )
-        if pressure_form.is_valid():
-            PressureExamination.objects.create(
-                made_by=self.request.user,
-                patient=self.object,
-                systole=pressure_form.cleaned_data["systole"],
-                diastole=pressure_form.cleaned_data["diastole"],
-                day_shift=day_shift,
-                night_shift=night_shift,
-            )
-        if pulse_form.is_valid():
-            PulseExamination.objects.create(
-                made_by=self.request.user,
-                patient=self.object,
-                pulse=pulse_form.cleaned_data["pulse"],
-                day_shift=day_shift,
-                night_shift=night_shift,
-            )
-        if temperature_form.is_valid():
-            TemperatureExamination.objects.create(
-                made_by=self.request.user,
-                patient=self.object,
-                temperature=temperature_form.cleaned_data["temperature"],
-                day_shift=day_shift,
-                night_shift=night_shift,
-            )
-            return self.form_valid(temperature_form)
+            if faeces_form.is_valid():
+                if pulse_form.is_valid():
+                    if pressure_form.is_valid():
+                        if temperature_form.is_valid():
+                            DietRecommendation.objects.create(
+                                made_by=self.request.user,
+                                patient=self.object,
+                                diet=diet_form.cleaned_data["diet"],
+                                day_shift=day_shift,
+                                night_shift=night_shift,
+                            )
+                            FaecesExamination.objects.create(
+                                made_by=self.request.user,
+                                patient=self.object,
+                                faeces=faeces_form.cleaned_data["faeces"],
+                                day_shift=day_shift,
+                                night_shift=night_shift,
+                            )
+                            PressureExamination.objects.create(
+                                made_by=self.request.user,
+                                patient=self.object,
+                                systole=pressure_form.cleaned_data["systole"],
+                                diastole=pressure_form.cleaned_data["diastole"],
+                                day_shift=day_shift,
+                                night_shift=night_shift,
+                            )
+                            PulseExamination.objects.create(
+                                made_by=self.request.user,
+                                patient=self.object,
+                                pulse=pulse_form.cleaned_data["pulse"],
+                                day_shift=day_shift,
+                                night_shift=night_shift,
+                            )
+                            TemperatureExamination.objects.create(
+                                made_by=self.request.user,
+                                patient=self.object,
+                                temperature=temperature_form.cleaned_data[
+                                    "temperature"
+                                ],
+                                day_shift=day_shift,
+                                night_shift=night_shift,
+                            )
+                            return self.form_valid(temperature_form)
+                        else:
+                            return self.form_invalid(temperature_form)
+                    else:
+                        return self.form_invalid(pressure_form)
+                else:
+                    return self.form_invalid(pulse_form)
+            else:
+                return self.form_invalid(faeces_form)
         else:
-            return self.form_invalid(temperature_form)
+            return self.form_invalid(diet_form)
 
     def get_success_url(self):
         return reverse("patients:detail", kwargs={"pk": self.object.pk})

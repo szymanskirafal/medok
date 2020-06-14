@@ -4,6 +4,13 @@ from patients.models import Patient
 
 from medok.users.models import User
 
+from .validators import (
+    validate_diastole_range,
+    validate_pulse_range,
+    validate_systole_range,
+    validate_temperature_range,
+)
+
 
 class TimeStampedModel(models.Model):
     really_created = models.DateTimeField(auto_now_add=True)
@@ -52,16 +59,25 @@ class FaecesExamination(Examination):
 
 class PressureExamination(Examination):
     systole = models.PositiveSmallIntegerField(
-        null=False, blank=False, verbose_name="Ciśnienie Skurczowe",
+        null=False,
+        blank=False,
+        validators=[validate_systole_range],
+        verbose_name="Ciśnienie Skurczowe",
     )
     diastole = models.PositiveSmallIntegerField(
-        null=False, blank=False, verbose_name="Ciśnienie Rozkurczowe",
+        null=False,
+        blank=False,
+        validators=[validate_diastole_range],
+        verbose_name="Ciśnienie Rozkurczowe",
     )
 
 
 class PulseExamination(Examination):
     pulse = models.PositiveSmallIntegerField(
-        null=False, blank=False, verbose_name="Tętno",
+        null=False,
+        blank=False,
+        validators=[validate_pulse_range],
+        verbose_name="Tętno",
     )
 
 
@@ -72,4 +88,5 @@ class TemperatureExamination(Examination):
         max_digits=3,
         decimal_places=1,
         verbose_name="Temperatura",
+        validators=[validate_temperature_range],
     )

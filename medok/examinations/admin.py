@@ -24,19 +24,52 @@ class DietRecommendationAdmin(admin.ModelAdmin):
 
 @admin.register(FaecesExamination)
 class FaecesExaminationAdmin(admin.ModelAdmin):
-    pass
+    fields = (
+        "created",
+        "made_by",
+        "patient",
+        "faeces",
+        "day_shift",
+        "night_shift",
+        "additional",
+    )
 
 
 @admin.register(PressureExamination)
 class PressureExaminationAdmin(admin.ModelAdmin):
-    pass
+    fields = (
+        "created",
+        "made_by",
+        "patient",
+        "systole",
+        "diastole",
+        "day_shift",
+        "night_shift",
+        "additional",
+    )
 
 
 @admin.register(PulseExamination)
 class PulseExaminationAdmin(admin.ModelAdmin):
-    pass
+    fields = (
+        "created",
+        "made_by",
+        "patient",
+        "pulse",
+        "day_shift",
+        "night_shift",
+        "additional",
+    )
 
 
 @admin.register(TemperatureExamination)
 class TemperatureExaminationAdmin(admin.ModelAdmin):
-    pass
+    fields = (
+        "created",
+        "made_by",
+        "patient",
+        "temperature",
+        "day_shift",
+        "night_shift",
+        "additional",
+    )
