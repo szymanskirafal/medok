@@ -20,13 +20,11 @@ class User(AbstractUser):
             validators.MaxValueValidator(99999999999),
         ],
     )
-    nurse = models.BooleanField(_("Nurse"), default=True)
-    doctor = models.BooleanField(_("Doctor"), default=False)
-    psychologist = models.BooleanField(_("Psychologist"), default=False)
-    physiotherapist = models.BooleanField(_("Physiotherapist"), default=False)
-    occupational_therapist = models.BooleanField(
-        _("Occupational therapist"), default=False
-    )
+    nurse = models.BooleanField("Pielęgniarka", default=True)
+    doctor = models.BooleanField("Lekarz", default=False)
+    psychologist = models.BooleanField("Psycholog", default=False)
+    physiotherapist = models.BooleanField("Fizjoterapeuta", default=False)
+    occupational_therapist = models.BooleanField("Terapeuta zabiegowy", default=False)
     superuser = models.BooleanField(_("Superuser"), default=False)
 
     def get_absolute_url(self):

@@ -1,9 +1,11 @@
+import calendar
 from datetime import date
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, HttpResponseForbidden
 from django.urls import reverse, reverse_lazy
+from django.utils.timezone import now
 from django.views import View, generic
 from examinations.forms import (
     DietRecommendationForm,
@@ -72,7 +74,8 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
         return context
 
     def get_days(self):
-        days = list(n for n in range(1, 31))
+        days = calendar.monthrange(now().year, now().month)[1]
+        days = range(1, days + 1)
         return days
 
     def get_shifts(self):

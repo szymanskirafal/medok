@@ -13,22 +13,20 @@
       <div class="col">
         <h5>Badania do zrobienia</h5>
         <br><br>
-        {% if temperature_form %}
-          <form action="" method="post" class="col-5">
-            {{ temperature_form|crispy }}
-            {% csrf_token %}
-            {{ pulse_form|crispy }}
-            {% csrf_token %}
-            {{ pressure_form|crispy }}
-            {% csrf_token %}
-            {{ faeces_form|crispy }}
-            {% csrf_token %}
-            {{ diet_form|crispy }}
-            {% csrf_token %}
-            <input class="btn btn-success" type="submit" value="Zapisz wyniki">
-          </form>
-          <br><br>
-        {% endif %}
+        <form action="" method="post" class="col-5">
+          {{ temperature_form|crispy }}
+          {% csrf_token %}
+          {{ pulse_form|crispy }}
+          {% csrf_token %}
+          {{ pressure_form|crispy }}
+          {% csrf_token %}
+          {{ faeces_form|crispy }}
+          {% csrf_token %}
+          {{ diet_form|crispy }}
+          {% csrf_token %}
+          <input class="btn btn-success" type="submit" value="Zapisz wyniki">
+        </form>
+        <br><br>
       </div>
       <div class="col">
         <h5>Badania dodatkowe</h5>
