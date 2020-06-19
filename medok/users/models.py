@@ -24,7 +24,7 @@ class User(AbstractUser):
     doctor = models.BooleanField("Lekarz", default=False)
     psychologist = models.BooleanField("Psycholog", default=False)
     physiotherapist = models.BooleanField("Fizjoterapeuta", default=False)
-    occupational_therapist = models.BooleanField("Terapeuta zabiegowy", default=False)
+    occupational_therapist = models.BooleanField("Terapeuta zajęciowy", default=False)
     superuser = models.BooleanField(_("Superuser"), default=False)
 
     def get_absolute_url(self):

@@ -1,27 +1,17 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
+from django.utils import timezone
 from django.views import generic
 from patients.models import Patient
 from patients.utils import check_shift
 
-from .forms import (
-    FaecesExaminationForm,
-    PressureExaminationForm,
-    PulseExaminationForm,
-    TemperatureExaminationForm,
-)
-from .models import (
-    DietRecommendation,
-    FaecesExamination,
-    PressureExamination,
-    PulseExamination,
-    TemperatureExamination,
-)
+from .forms import ExaminationForm
+from .models import Examination
 
 
-class FaecesExaminationCreateView(LoginRequiredMixin, generic.CreateView):
-    form_class = FaecesExaminationForm
-    model = FaecesExamination
+class ExaminationCreateView(LoginRequiredMixin, generic.CreateView):
+    form_class = ExaminationForm
+    model = Examination
     template_name = "examinations/create.html"
 
     def get_context_data(self, **kwargs):
@@ -30,7 +20,8 @@ class FaecesExaminationCreateView(LoginRequiredMixin, generic.CreateView):
         return context
 
     def form_valid(self, form):
-        form.instance.made_by = self.request.user
+        form.instance.made_on = timezone.now()
+        form.instance.done_by = self.request.user
         form.instance.patient = Patient.objects.get(pk=self.kwargs["pk"])
         shift = check_shift()
         if shift == "night":
@@ -41,12 +32,95 @@ class FaecesExaminationCreateView(LoginRequiredMixin, generic.CreateView):
             day_shift = True
         form.instance.day_shift = day_shift
         form.instance.night_shift = night_shift
-        form.instance.additional = True
+        form.instance.additional = False
+        form.instance.temperature = form.cleaned_data["temperature"]
+        form.instance.pulse = form.cleaned_data["pulse"]
+        form.instance.systole = form.cleaned_data["systole"]
+        form.instance.diastole = form.cleaned_data["diastole"]
+        form.instance.diet = form.cleaned_data["diet"]
+        form.instance.faeces = form.cleaned_data["faeces"]
         return super().form_valid(form)
 
     def get_success_url(self):
         return reverse("patients:detail", kwargs={"pk": self.kwargs["pk"]})
 
+
+class ExaminationsDietListView(LoginRequiredMixin, generic.ListView):
+    context_object_name = "examinations"
+    model = Examination
+    template_name = "examinations/diets.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = self.patient
+        return context
+
+    def get_queryset(self):
+        self.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        return Examination.objects.all().filter(patient=self.patient)
+
+
+class ExaminationsFaecesListView(LoginRequiredMixin, generic.ListView):
+    context_object_name = "examinations"
+    model = Examination
+    template_name = "examinations/faeceses.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = self.patient
+        return context
+
+    def get_queryset(self):
+        self.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        return Examination.objects.all().filter(patient=self.patient)
+
+
+class ExaminationsPressureListView(LoginRequiredMixin, generic.ListView):
+    context_object_name = "examinations"
+    model = Examination
+    template_name = "examinations/pressures.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = self.patient
+        return context
+
+    def get_queryset(self):
+        self.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        return Examination.objects.all().filter(patient=self.patient)
+
+
+class ExaminationsPulseListView(LoginRequiredMixin, generic.ListView):
+    context_object_name = "examinations"
+    model = Examination
+    template_name = "examinations/pulses.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = self.patient
+        return context
+
+    def get_queryset(self):
+        self.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        return Examination.objects.all().filter(patient=self.patient)
+
+
+class ExaminationsTemperatureListView(LoginRequiredMixin, generic.ListView):
+    context_object_name = "examinations"
+    model = Examination
+    template_name = "examinations/temperatures.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = self.patient
+        return context
+
+    def get_queryset(self):
+        self.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        return Examination.objects.all().filter(patient=self.patient)
+
+
+"""
 
 class PressureExaminationCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = PressureExaminationForm
@@ -194,17 +268,4 @@ class PulseExaminationHistoricalListView(LoginRequiredMixin, generic.ListView):
         self.patient = Patient.objects.get(pk=self.kwargs["pk"])
         return PulseExamination.objects.all().filter(patient=self.patient)
 
-
-class TemperatureExaminationHistoricalListView(LoginRequiredMixin, generic.ListView):
-    context_object_name = "examinations"
-    model = TemperatureExamination
-    template_name = "examinations/historical-temperature.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["patient"] = self.patient
-        return context
-
-    def get_queryset(self):
-        self.patient = Patient.objects.get(pk=self.kwargs["pk"])
-        return TemperatureExamination.objects.all().filter(patient=self.patient)
+"""

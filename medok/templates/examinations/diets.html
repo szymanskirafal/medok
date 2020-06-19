@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+
+  <h1>Historia zaleceń diety</h1>
+  <p>Pacjent {{ patient.name }} {{ patient.surname }}</p>
+  <p>adres: {{ patient.street }} {{ patient.nr }} {{ patient.city }}, ur. {{ patient.birthday|date:"d-m-Y" }}, PESEL {{patient.pesel }}</p>
+  <p>Numer w Książce Głównej: {{ patient.nr_in_main_book }}, Numer w Książce Oddziałowe: {{ patient.nr_in_ward_book }}</p>
+  <br><br>
+  {% for exam in examinations %}
+    <p>Data: {{ exam.made_on|date:"d-m-Y" }}, czas: {{ exam.made_on|time:"h:i" }}, wynik: {{ exam.get_diet_display }}, wykonany przez: {{ exam.done_by }}</p>
+  {% endfor %}
+
+
+</div>
+{% endblock content %}

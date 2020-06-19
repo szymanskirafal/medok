@@ -15,3 +15,14 @@ def check_shift():
     else:
         shift = "day"
     return shift
+
+
+def get_current_shifts():
+    shift = check_shift()
+    if shift == "night":
+        night_shift = True
+        day_shift = False
+    else:
+        night_shift = False
+        day_shift = True
+    return day_shift, night_shift

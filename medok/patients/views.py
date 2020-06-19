@@ -1,33 +1,19 @@
 import calendar
-from datetime import date
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse, HttpResponseForbidden
-from django.urls import reverse, reverse_lazy
-from django.utils.timezone import now
-from django.views import View, generic
-from examinations.forms import (
-    DietRecommendationForm,
-    FaecesExaminationForm,
-    PressureExaminationForm,
-    PulseExaminationForm,
-    TemperatureExaminationForm,
-)
-from examinations.models import (
-    DietRecommendation,
-    FaecesExamination,
-    PressureExamination,
-    PulseExamination,
-    TemperatureExamination,
-)
+from django.http import HttpResponse
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.views import generic
+from examinations.models import Examination
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
 from .forms import PatientForm
 from .models import Patient
-from .utils import check_shift
+from .utils import get_current_shifts
 
 
 def write_pdf_view(request):
@@ -62,10 +48,24 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
     model = Patient
     template_name = "patients/detail.html"
 
+    def check_examination_need(self):
+        examinations = Examination.objects.all()
+        examinations = examinations.filter(patient=self.get_object(),)
+        examinations = examinations.filter(made_on__date=timezone.now().date(),)
+        examinations = examinations.filter(additional=False)
+        day_shift, night_shift = get_current_shifts()
+        examinations = examinations.filter(day_shift=day_shift)
+        examinations = examinations.filter(night_shift=night_shift)
+        if examinations.exists():
+            return False
+        else:
+            return True
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["days"] = self.get_days()
         context["diets"] = self.get_diets()
+        context["examination_has_to_be_made"] = self.check_examination_need()
         context["faeceses"] = self.get_faeceses()
         context["pressures"] = self.get_pressures()
         context["pulses"] = self.get_pulses()
@@ -74,7 +74,7 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
         return context
 
     def get_days(self):
-        days = calendar.monthrange(now().year, now().month)[1]
+        days = calendar.monthrange(timezone.now().year, timezone.now().month)[1]
         days = range(1, days + 1)
         return days
 
@@ -85,73 +85,71 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
             shifts.append("W")
         return shifts
 
-    def get_diets(self):
+    def get_faeceses(self):
         results = []
-        today = date.today()
-        exams = DietRecommendation.objects.all()
+        exams = Examination.objects.all()
         exams = exams.filter(patient=self.get_object())
         exams = exams.filter(additional=False)
-        exams = exams.filter(created__year=today.year)
-        exams = exams.filter(created__month=today.month)
-        exams = exams.order_by("created")
+        exams = exams.filter(made_on__year=timezone.now().year)
+        exams = exams.filter(made_on__month=timezone.now().month)
+        exams = exams.order_by("made_on")
         days_exams_was_made = set()
         for exam in exams:
-            days_exams_was_made.add(exam.created.day)
+            days_exams_was_made.add(exam.made_on.day)
         for day in self.get_days():
             exams_this_day = []
             for exam in exams:
-                if exam.created.day == day:
+                if exam.made_on.day == day:
                     exams_this_day.append(exam)
             if len(exams_this_day) == 2:
                 for exam in exams_this_day:
                     if exam.day_shift:
-                        results.append(exam.get_diet_display())
+                        results.append(exam.faeces)
                     if exam.night_shift:
-                        results.append(exam.get_diet_display())
+                        results.append(exam.faeces)
             elif len(exams_this_day) == 1:
                 for exam in exams_this_day:
                     if exam.day_shift:
-                        results.append(exam.get_diet_display())
+                        results.append(exam.faeces)
                         results.append("BRAK")
                     if exam.night_shift:
                         results.append("BRAK")
-                        results.append(exam.get_diet_display())
+                        results.append(exam.faeces)
             else:
                 results.append("BRAK")
                 results.append("BRAK")
         return results
 
-    def get_faeceses(self):
+    def get_diets(self):
         results = []
-        today = date.today()
-        exams = FaecesExamination.objects.all()
+        exams = Examination.objects.all()
         exams = exams.filter(patient=self.get_object())
         exams = exams.filter(additional=False)
-        exams = exams.filter(created__year=today.year)
-        exams = exams.filter(created__month=today.month)
-        exams = exams.order_by("created")
+        exams = exams.filter(made_on__year=timezone.now().year)
+        exams = exams.filter(made_on__month=timezone.now().month)
+        exams = exams.order_by("made_on")
         days_exams_was_made = set()
         for exam in exams:
-            days_exams_was_made.add(exam.created.day)
+            days_exams_was_made.add(exam.made_on.day)
         for day in self.get_days():
             exams_this_day = []
             for exam in exams:
-                if exam.created.day == day:
+                if exam.made_on.day == day:
                     exams_this_day.append(exam)
             if len(exams_this_day) == 2:
                 for exam in exams_this_day:
                     if exam.day_shift:
-                        results.append(exam.faeces)
+                        results.append(exam.get_diet_display())
                     if exam.night_shift:
-                        results.append(exam.faeces)
+                        results.append(exam.get_diet_display())
             elif len(exams_this_day) == 1:
                 for exam in exams_this_day:
                     if exam.day_shift:
-                        results.append(exam.faeces)
+                        results.append(exam.get_diet_display())
                         results.append("BRAK")
                     if exam.night_shift:
                         results.append("BRAK")
-                        results.append(exam.faeces)
+                        results.append(exam.get_diet_display())
             else:
                 results.append("BRAK")
                 results.append("BRAK")
@@ -159,20 +157,19 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_pressures(self):
         results = []
-        today = date.today()
-        exams = PressureExamination.objects.all()
+        exams = Examination.objects.all()
         exams = exams.filter(patient=self.get_object())
         exams = exams.filter(additional=False)
-        exams = exams.filter(created__year=today.year)
-        exams = exams.filter(created__month=today.month)
-        exams = exams.order_by("created")
+        exams = exams.filter(made_on__year=timezone.now().year)
+        exams = exams.filter(made_on__month=timezone.now().month)
+        exams = exams.order_by("made_on")
         days_exams_was_made = set()
         for exam in exams:
-            days_exams_was_made.add(exam.created.day)
+            days_exams_was_made.add(exam.made_on.day)
         for day in self.get_days():
             exams_this_day = []
             for exam in exams:
-                if exam.created.day == day:
+                if exam.made_on.day == day:
                     exams_this_day.append(exam)
             if len(exams_this_day) == 2:
                 for exam in exams_this_day:
@@ -197,20 +194,19 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_pulses(self):
         results = []
-        today = date.today()
-        exams = PulseExamination.objects.all()
+        exams = Examination.objects.all()
         exams = exams.filter(patient=self.get_object())
         exams = exams.filter(additional=False)
-        exams = exams.filter(created__year=today.year)
-        exams = exams.filter(created__month=today.month)
-        exams = exams.order_by("created")
+        exams = exams.filter(made_on__year=timezone.now().year)
+        exams = exams.filter(made_on__month=timezone.now().month)
+        exams = exams.order_by("made_on")
         days_exams_was_made = set()
         for exam in exams:
-            days_exams_was_made.add(exam.created.day)
+            days_exams_was_made.add(exam.made_on.day)
         for day in self.get_days():
             exams_this_day = []
             for exam in exams:
-                if exam.created.day == day:
+                if exam.made_on.day == day:
                     exams_this_day.append(exam)
             if len(exams_this_day) == 2:
                 for exam in exams_this_day:
@@ -233,20 +229,19 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_temps(self):
         results = []
-        today = date.today()
-        exams = TemperatureExamination.objects.all()
+        exams = Examination.objects.all()
         exams = exams.filter(patient=self.get_object())
         exams = exams.filter(additional=False)
-        exams = exams.filter(created__year=today.year)
-        exams = exams.filter(created__month=today.month)
-        exams = exams.order_by("created")
+        exams = exams.filter(made_on__year=timezone.now().year)
+        exams = exams.filter(made_on__month=timezone.now().month)
+        exams = exams.order_by("made_on")
         days_exams_was_made = set()
         for exam in exams:
-            days_exams_was_made.add(exam.created.day)
+            days_exams_was_made.add(exam.made_on.day)
         for day in self.get_days():
             exams_this_day = []
             for exam in exams:
-                if exam.created.day == day:
+                if exam.made_on.day == day:
                     exams_this_day.append(exam)
             if len(exams_this_day) == 2:
                 for exam in exams_this_day:
@@ -268,6 +263,7 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
         return results
 
 
+"""
 class PatientExaminationsDetailView(View):
     def get(self, request, *args, **kwargs):
         view = PatientExaminationsDisplayView.as_view()
@@ -489,6 +485,7 @@ class PatientExaminationMadeView(
 
     def get_success_url(self):
         return reverse("patients:detail", kwargs={"pk": self.object.pk})
+"""
 
 
 class PatientsListView(LoginRequiredMixin, generic.ListView):

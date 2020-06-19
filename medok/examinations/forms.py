@@ -1,50 +1,16 @@
 from django.forms import ModelForm
 
-from .models import (
-    DietRecommendation,
-    FaecesExamination,
-    PressureExamination,
-    PulseExamination,
-    TemperatureExamination,
-)
+from .models import Examination
 
 
-class DietRecommendationForm(ModelForm):
+class ExaminationForm(ModelForm):
     class Meta:
-        model = DietRecommendation
-        fields = [
-            "diet",
-        ]
-
-
-class FaecesExaminationForm(ModelForm):
-    class Meta:
-        model = FaecesExamination
-        fields = [
-            "faeces",
-        ]
-
-
-class PressureExaminationForm(ModelForm):
-    class Meta:
-        model = PressureExamination
-        fields = [
-            "systole",
-            "diastole",
-        ]
-
-
-class TemperatureExaminationForm(ModelForm):
-    class Meta:
-        model = TemperatureExamination
+        model = Examination
         fields = [
             "temperature",
-        ]
-
-
-class PulseExaminationForm(ModelForm):
-    class Meta:
-        model = PulseExamination
-        fields = [
             "pulse",
+            "systole",
+            "diastole",
+            "diet",
+            "faeces",
         ]

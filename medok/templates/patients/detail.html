@@ -38,31 +38,31 @@
   </thead>
   <tbody>
     <tr>
-      <th scope="col" colspan="2"><a href="{% url 'examinations:historical-temperature' patient.pk %}">Ciepło</a></th>
+      <th scope="col" colspan="2"><a href="{% url 'examinations:temperatures' patient.pk %}">Ciepło</a></th>
       {% for temp in temps %}
         <td class="font-weight-lighter">{{ temp }}</td>
       {% endfor %}
     </tr>
     <tr>
-      <th scope="col" colspan="2"><a href="{% url 'examinations:historical-pulse' patient.pk %}">Tętno</a></th>
+      <th scope="col" colspan="2"><a href="{% url 'examinations:pulses' patient.pk %}">Tętno</a></th>
       {% for pulse in pulses %}
         <td class="font-weight-lighter">{{ pulse }}</td>
       {% endfor %}
     </tr>
     <tr>
-      <th scope="col" colspan="2"><a href="{% url 'examinations:historical-pressure' patient.pk %}">Ciśnienie</a></th>
+      <th scope="col" colspan="2"><a href="{% url 'examinations:pressures' patient.pk %}">Ciśnienie</a></th>
       {% for pressure in pressures %}
         <td class="font-weight-lighter">{{ pressure }}</td>
       {% endfor %}
     </tr>
     <tr>
-      <th scope="col" colspan="2"><a href="{% url 'examinations:historical-diet' patient.pk %}">Dieta</a></th>
+      <th scope="col" colspan="2"><a href="{% url 'examinations:diets' patient.pk %}">Dieta</a></th>
       {% for diet in diets %}
         <td class="font-weight-lighter">{{ diet }}</td>
       {% endfor %}
     </tr>
     <tr>
-      <th scope="col" colspan="2"><a href="{% url 'examinations:historical-faeces' patient.pk %}">Stolec</a></th>
+      <th scope="col" colspan="2"><a href="{% url 'examinations:faeceses' patient.pk %}">Stolec</a></th>
       {% for faeces in faeceses %}
         <td class="font-weight-lighter">{{ faeces }}</td>
       {% endfor %}
@@ -70,7 +70,11 @@
 
   </tbody>
 </table>
-<a class="btn btn-outline-success" href="{% url 'patients:examinations' patient.pk %}" role="button">Badania</a>
+{% if examination_has_to_be_made %}
+  <a class="btn btn-lg btn-outline-danger" href="{% url 'examinations:create' patient.pk %}" role="button">Badania trzeba zrobić</a>
+{% else %}
+  <p>Badania z bieżącego dyżuru zrobione</p>
+{% endif %}
 <a class="btn btn-outline-success" href="{% url 'patients:write_pdf_view' %}" role="button">Drukuj</a>
 </div>
 <br><br>

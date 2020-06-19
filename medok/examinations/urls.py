@@ -3,50 +3,32 @@ from django.urls import path
 from . import views
 
 app_name = "examinations"
+
 urlpatterns = [
+    path("create/<int:pk>", view=views.ExaminationCreateView.as_view(), name="create",),
     path(
-        "additional/faeces/<int:pk>",
-        view=views.FaecesExaminationCreateView.as_view(),
-        name="additional-faeces",
+        "historiacal/diets/<int:pk>",
+        view=views.ExaminationsDietListView.as_view(),
+        name="diets",
     ),
     path(
-        "additional/pressure/<int:pk>",
-        view=views.PressureExaminationCreateView.as_view(),
-        name="additional-pressure",
+        "historiacal/faeceses/<int:pk>",
+        view=views.ExaminationsFaecesListView.as_view(),
+        name="faeceses",
     ),
     path(
-        "additional/pulse/<int:pk>",
-        view=views.PulseExaminationCreateView.as_view(),
-        name="additional-pulse",
+        "historiacal/pressures/<int:pk>",
+        view=views.ExaminationsPressureListView.as_view(),
+        name="pressures",
     ),
     path(
-        "additional/temperature/<int:pk>",
-        view=views.TemperatureExaminationCreateView.as_view(),
-        name="additional-temperature",
+        "historiacal/pulses/<int:pk>",
+        view=views.ExaminationsPulseListView.as_view(),
+        name="pulses",
     ),
     path(
-        "historical/diet/<int:pk>",
-        view=views.DietRecommendationHistoricalListView.as_view(),
-        name="historical-diet",
-    ),
-    path(
-        "historical/faeces/<int:pk>",
-        view=views.FaecesExaminationHistoricalListView.as_view(),
-        name="historical-faeces",
-    ),
-    path(
-        "historical/pulse/<int:pk>",
-        view=views.PulseExaminationHistoricalListView.as_view(),
-        name="historical-pulse",
-    ),
-    path(
-        "historical/pressure/<int:pk>",
-        view=views.PressureExaminationHistoricalListView.as_view(),
-        name="historical-pressure",
-    ),
-    path(
-        "historical/temperature/<int:pk>",
-        view=views.TemperatureExaminationHistoricalListView.as_view(),
-        name="historical-temperature",
+        "historiacal/temperature/<int:pk>",
+        view=views.ExaminationsTemperatureListView.as_view(),
+        name="temperatures",
     ),
 ]
