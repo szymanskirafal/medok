@@ -124,12 +124,15 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
         results = []
         exams = Examination.objects.all()
         exams = exams.filter(patient=self.get_object())
+        for exam in exams:
+            print("-- additional: ", exam.additional)
         exams = exams.filter(additional=False)
         exams = exams.filter(made_on__year=timezone.now().year)
         exams = exams.filter(made_on__month=timezone.now().month)
         exams = exams.order_by("made_on")
         days_exams_was_made = set()
         for exam in exams:
+            print("-- addi: ", exam.additional)
             days_exams_was_made.add(exam.made_on.day)
         for day in self.get_days():
             exams_this_day = []

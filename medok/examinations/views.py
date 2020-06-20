@@ -39,12 +39,22 @@ class ExaminationCreateView(LoginRequiredMixin, generic.CreateView):
         return reverse("patients:detail", kwargs={"pk": self.kwargs["pk"]})
 
 
-class ExaminationAdditionalCreateView(ExaminationCreateView):
+class ExaminationAdditionalCreateView(LoginRequiredMixin, generic.CreateView):
+    form_class = ExaminationForm
+    model = Examination
+    template_name = "examinations/create.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = Patient.objects.get(pk=self.kwargs["pk"])
+        return context
+
     def form_valid(self, form):
         form.instance.made_on = timezone.now()
         form.instance.done_by = self.request.user
         form.instance.patient = Patient.objects.get(pk=self.kwargs["pk"])
         day_shift, night_shift = get_current_shifts()
+        print(" --- curent shifts d,n: ", day_shift, night_shift)
         form.instance.day_shift = day_shift
         form.instance.night_shift = night_shift
         form.instance.additional = True
@@ -54,7 +64,11 @@ class ExaminationAdditionalCreateView(ExaminationCreateView):
         form.instance.diastole = form.cleaned_data["diastole"]
         form.instance.diet = form.cleaned_data["diet"]
         form.instance.faeces = form.cleaned_data["faeces"]
+        print(" --- add ", form.instance.additional)
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("patients:detail", kwargs={"pk": self.kwargs["pk"]})
 
 
 class ExaminationsDietListView(LoginRequiredMixin, generic.ListView):
