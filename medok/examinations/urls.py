@@ -7,27 +7,32 @@ app_name = "examinations"
 urlpatterns = [
     path("create/<int:pk>", view=views.ExaminationCreateView.as_view(), name="create",),
     path(
-        "historiacal/diets/<int:pk>",
+        "create/<int:pk>additional",
+        view=views.ExaminationAdditionalCreateView.as_view(),
+        name="create-additional",
+    ),
+    path(
+        "historical/diets/<int:pk>",
         view=views.ExaminationsDietListView.as_view(),
         name="diets",
     ),
     path(
-        "historiacal/faeceses/<int:pk>",
+        "historical/faeceses/<int:pk>",
         view=views.ExaminationsFaecesListView.as_view(),
         name="faeceses",
     ),
     path(
-        "historiacal/pressures/<int:pk>",
+        "historical/pressures/<int:pk>",
         view=views.ExaminationsPressureListView.as_view(),
         name="pressures",
     ),
     path(
-        "historiacal/pulses/<int:pk>",
+        "historical/pulses/<int:pk>",
         view=views.ExaminationsPulseListView.as_view(),
         name="pulses",
     ),
     path(
-        "historiacal/temperature/<int:pk>",
+        "historical/temperature/<int:pk>",
         view=views.ExaminationsTemperatureListView.as_view(),
         name="temperatures",
     ),

@@ -75,6 +75,7 @@
 {% else %}
   <p>Badania z bieżącego dyżuru zrobione</p>
 {% endif %}
+<a class="btn btn-outline-success" href="{% url 'examinations:create-additional' patient.pk %}" role="button">Badania dodatkowe</a>
 <a class="btn btn-outline-success" href="{% url 'patients:write_pdf_view' %}" role="button">Drukuj</a>
 </div>
 <br><br>

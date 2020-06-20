@@ -6,8 +6,8 @@ from .models import Examination
 @admin.register(Examination)
 class ExaminationAdmin(admin.ModelAdmin):
     fields = (
-        "made",
-        "made_by",
+        "made_on",
+        "done_by",
         "patient",
         "day_shift",
         "night_shift",

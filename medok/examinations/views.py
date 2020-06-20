@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
 from patients.models import Patient
-from patients.utils import check_shift
+from patients.utils import get_current_shifts
 
 from .forms import ExaminationForm
 from .models import Examination
@@ -23,13 +23,7 @@ class ExaminationCreateView(LoginRequiredMixin, generic.CreateView):
         form.instance.made_on = timezone.now()
         form.instance.done_by = self.request.user
         form.instance.patient = Patient.objects.get(pk=self.kwargs["pk"])
-        shift = check_shift()
-        if shift == "night":
-            night_shift = True
-            day_shift = False
-        else:
-            night_shift = False
-            day_shift = True
+        day_shift, night_shift = get_current_shifts()
         form.instance.day_shift = day_shift
         form.instance.night_shift = night_shift
         form.instance.additional = False
@@ -43,6 +37,24 @@ class ExaminationCreateView(LoginRequiredMixin, generic.CreateView):
 
     def get_success_url(self):
         return reverse("patients:detail", kwargs={"pk": self.kwargs["pk"]})
+
+
+class ExaminationAdditionalCreateView(ExaminationCreateView):
+    def form_valid(self, form):
+        form.instance.made_on = timezone.now()
+        form.instance.done_by = self.request.user
+        form.instance.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        day_shift, night_shift = get_current_shifts()
+        form.instance.day_shift = day_shift
+        form.instance.night_shift = night_shift
+        form.instance.additional = True
+        form.instance.temperature = form.cleaned_data["temperature"]
+        form.instance.pulse = form.cleaned_data["pulse"]
+        form.instance.systole = form.cleaned_data["systole"]
+        form.instance.diastole = form.cleaned_data["diastole"]
+        form.instance.diet = form.cleaned_data["diet"]
+        form.instance.faeces = form.cleaned_data["faeces"]
+        return super().form_valid(form)
 
 
 class ExaminationsDietListView(LoginRequiredMixin, generic.ListView):
