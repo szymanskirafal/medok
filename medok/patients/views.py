@@ -1,5 +1,6 @@
 import calendar
 
+from chartjs.views.lines import BaseLineChartView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
@@ -266,8 +267,51 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
         return results
 
 
+class PatientsChartTemplateView(generic.TemplateView):
+    template_name = "patients/chart.html"
+
+
+class PatientsChartTimeTemplateView(generic.TemplateView):
+    template_name = "patients/chart-time.html"
+
+
+class LineChartJSONView(BaseLineChartView):
+    def get_labels(self):
+        """Return 7 labels for the x-axis."""
+        return ["January", "February", "March", "April", "May", "June", "July"]
+
+    def get_providers(self):
+        """Return names of datasets."""
+        return ["Central"]
+
+    def get_data(self):
+        """Return 3 datasets to plot."""
+
+        return [[75, 44, 92, 11, 44, 95, 35]]
+
+
+line_chart = generic.TemplateView.as_view(template_name="patients/line_chart.html")
+line_chart_json = LineChartJSONView.as_view()
+
 """
 class PatientExaminationsDetailView(View):
+    data1 = [
+        {'x': "2020-02-01 18:37:39", y: 36.0},
+        {x: "2020-02-02 18:37:39", y: 37.0},
+        {x: "2020-02-03 18:37:39", y: 36.6},
+        {x: "2020-02-04 18:37:39", y: 36.8},
+        {x: "2020-02-05 18:37:39", y: 37.0},
+        {x: "2020-02-06 18:37:39", y: 36.6},
+        {x: "2020-02-07 18:37:39", y: 37.3},
+        {x: "2020-02-08 18:37:39", y: 37.2},
+        {x: "2020-02-09 18:37:39", y: 36.9},
+        {x: "2020-02-10 18:37:39", y: 35.9},
+        {x: "2020-02-11 18:37:39", y: 36.5},
+        {x: "2020-02-12 18:37:39", y: 37.4},
+        {x: "2020-02-13 18:37:39", y: 38.5},
+        {x: "2020-02-14 18:37:39", y: 39.0},
+        {x: "2020-02-15 18:37:39", y: 36.6},
+    ]
     def get(self, request, *args, **kwargs):
         view = PatientExaminationsDisplayView.as_view()
         return view(request, *args, **kwargs)

@@ -13,4 +13,10 @@ urlpatterns = [
     #    name="examinations",
     # ),
     path("pdf/", view=views.write_pdf_view, name="write_pdf_view"),
+    path("chart/", view=views.PatientsChartTemplateView.as_view(), name="chart",),
+    path(
+        "chart-time/",
+        view=views.PatientsChartTimeTemplateView.as_view(),
+        name="chart-time",
+    ),
 ]

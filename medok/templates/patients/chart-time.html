@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container" style="width: 75%";>
+    <canvas id="myChart"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.js"></script>
+
+  <script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: 'Temperatura',
+            data: [
+              {
+                x: new Date(2020, 06, 12, 15,31,23),
+                y: 35.7
+              },
+              {
+                x: new Date(2020, 06, 13, 07,15,23),
+                y: 36.2
+              },
+              {
+                x: new Date(2020, 06, 14, 19,26,23),
+                y: 37.1
+              },
+              {
+                x: new Date(2020, 06, 15, 09,31,23),
+                y: 37.8
+              },
+              {
+                x: new Date(2020, 06, 15, 10,40,23),
+                y: 38.5
+              },
+              {
+                x: new Date(2020, 06, 15, 11,20,23),
+                y: 39.3
+              },
+              {
+                x: new Date(2020, 06, 15, 12,05,23),
+                y: 39.6
+              },
+              {
+                x: new Date(2020, 06, 16, 15,31,23),
+                y: 37.2
+              },
+              {
+                x: new Date(2020, 06, 17, 15,31,23),
+                y: 36.3
+              },
+              {
+                x: new Date(2020, 06, 18, 15,31,23),
+                y: 36.6
+              },
+              {
+                x: new Date(2020, 06, 19, 15,31,23),
+                y: 37.4
+              },
+              {
+                x: new Date(2020, 06, 20, 15,31,23),
+                y: 38.4
+              },
+              {
+                x: new Date(2020, 06, 21, 15,31,23),
+                y: 38.9
+              },
+              {
+                x: new Date(2020, 06, 22, 15,31,23),
+                y: 37.8
+              },
+              {
+                x: new Date(2020, 06, 23, 15,31,23),
+                y: 37.1
+              },
+              {
+                x: new Date(2020, 06, 24, 15,31,23),
+                y: 36.5
+              },
+              {
+                x: new Date(2020, 06, 25, 15,31,23),
+                y: 36.2
+              },
+              {
+                x: new Date(2020, 06, 26, 15,31,23),
+                y: 36.4
+              },
+            ],
+            fill: false,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+            ],
+            borderColor: [
+              'rgba(255, 99, 120, 1)',
+            ],
+            borderWidth: 1
+        },
+        {
+            label: 'Puls',
+            data: [
+              {
+                x: new Date(2020, 06, 12, 15,31,23),
+                y: 70
+              },
+              {
+                x: new Date(2020, 06, 13, 07,15,23),
+                y: 73
+              },
+              {
+                x: new Date(2020, 06, 14, 19,26,23),
+                y: 69
+              },
+              {
+                x: new Date(2020, 06, 15, 09,31,23),
+                y: 68
+              },
+              {
+                x: new Date(2020, 06, 15, 10,40,23),
+                y: 78
+              },
+              {
+                x: new Date(2020, 06, 15, 11,20,23),
+                y: 82
+              },
+              {
+                x: new Date(2020, 06, 15, 12,05,23),
+                y: 84
+              },
+              {
+                x: new Date(2020, 06, 16, 15,31,23),
+                y: 72
+              },
+              {
+                x: new Date(2020, 06, 17, 15,31,23),
+                y: 68
+              },
+              {
+                x: new Date(2020, 06, 18, 15,31,23),
+                y: 67
+              },
+              {
+                x: new Date(2020, 06, 19, 15,31,23),
+                y: 70
+              },
+              {
+                x: new Date(2020, 06, 20, 15,31,23),
+                y: 73
+              },
+              {
+                x: new Date(2020, 06, 21, 15,31,23),
+                y: 80
+              },
+              {
+                x: new Date(2020, 06, 22, 15,31,23),
+                y: 74
+              },
+              {
+                x: new Date(2020, 06, 23, 15,31,23),
+                y: 72
+              },
+              {
+                x: new Date(2020, 06, 24, 15,31,23),
+                y: 70
+              },
+              {
+                x: new Date(2020, 06, 25, 15,31,23),
+                y: 71
+              },
+              {
+                x: new Date(2020, 06, 26, 15,31,23),
+                y: 69
+              },
+            ],
+            fill: false,
+            backgroundColor: [
+              'blue',
+            ],
+            borderColor: [
+              'blue',
+            ],
+            borderWidth: 1
+        }
+      ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:false,
+                    min: 35,
+                    max: 85,
+                }
+            }],
+            xAxes: [{
+                type: 'time',
+                time: {
+                    parser: 'MM/DD/YYYY HH:mm',
+                    tooltipFormat: 'll HH:mm',
+                    unit: 'day',
+                    unitStepSize: 1,
+                    format: 'MM/DD/YYYY HH:mm',
+                    displayFormats: {
+                        'day': 'DD/M'
+                    },
+                }
+            }]
+        }
+    }
+});
+</script>
+
+
+
+{% endblock %}
