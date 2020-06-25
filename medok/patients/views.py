@@ -275,6 +275,17 @@ class PatientsChartTimeTemplateView(generic.TemplateView):
     template_name = "patients/chart-time.html"
 
 
+class PatientsChartTimeDataTemplateView(generic.TemplateView):
+    template_name = "patients/chart-time-data.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        exams = Examination.objects.all()
+        exams = exams.order_by("made_on")
+        context["exams"] = exams
+        return context
+
+
 class LineChartJSONView(BaseLineChartView):
     def get_labels(self):
         """Return 7 labels for the x-axis."""

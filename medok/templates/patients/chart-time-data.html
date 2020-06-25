@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container" style="width: 75%";>
+    <canvas id="myChart"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.js"></script>
+
+  <script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: 'Temperatura',
+            data: [
+              {% for exam in exams %}
+              {
+                x: new Date({{ exam.made_on|date:"Y, m, d, H, i" }}),
+                y: {{ exam.temperature }}
+              },
+              {% endfor %}
+            ],
+            fill: false,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+            ],
+            borderColor: [
+              'rgba(255, 99, 120, 1)',
+            ],
+            borderWidth: 1
+        },
+      ]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:false,
+                    min: 35,
+                    max: 45,
+                }
+            }],
+            xAxes: [{
+                type: 'time',
+                time: {
+                    parser: 'MM/DD/YYYY HH:mm',
+                    tooltipFormat: 'll HH:mm',
+                    unit: 'day',
+                    unitStepSize: 1,
+                    format: 'MM/DD/YYYY HH:mm',
+                    displayFormats: {
+                        'day': 'DD/M'
+                    },
+                }
+            }]
+        }
+    }
+});
+</script>
+
+
+
+{% endblock %}

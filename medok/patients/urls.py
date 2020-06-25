@@ -19,4 +19,9 @@ urlpatterns = [
         view=views.PatientsChartTimeTemplateView.as_view(),
         name="chart-time",
     ),
+    path(
+        "chart-time-data/",
+        view=views.PatientsChartTimeDataTemplateView.as_view(),
+        name="chart-time-data",
+    ),
 ]
