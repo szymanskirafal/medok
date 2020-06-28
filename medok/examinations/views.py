@@ -5,7 +5,7 @@ from django.views import generic
 from patients.models import Patient
 from patients.utils import get_current_shifts
 
-from .forms import ExaminationForm
+from .forms import DietForm, ExaminationForm, PressureForm, PulseForm, TemperatureForm
 from .models import Examination
 
 
@@ -39,8 +39,8 @@ class ExaminationCreateView(LoginRequiredMixin, generic.CreateView):
         return reverse("patients:detail", kwargs={"pk": self.kwargs["pk"]})
 
 
-class ExaminationAdditionalCreateView(LoginRequiredMixin, generic.CreateView):
-    form_class = ExaminationForm
+class ExaminationAdditionalDietCreateView(LoginRequiredMixin, generic.CreateView):
+    form_class = DietForm
     model = Examination
     template_name = "examinations/create.html"
 
@@ -54,17 +54,88 @@ class ExaminationAdditionalCreateView(LoginRequiredMixin, generic.CreateView):
         form.instance.done_by = self.request.user
         form.instance.patient = Patient.objects.get(pk=self.kwargs["pk"])
         day_shift, night_shift = get_current_shifts()
-        print(" --- curent shifts d,n: ", day_shift, night_shift)
+        form.instance.day_shift = day_shift
+        form.instance.night_shift = night_shift
+        form.instance.additional = True
+        form.instance.diet = form.cleaned_data["diet"]
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("patients:detail", kwargs={"pk": self.kwargs["pk"]})
+
+
+class ExaminationAdditionalPressureCreateView(LoginRequiredMixin, generic.CreateView):
+    form_class = PressureForm
+    model = Examination
+    template_name = "examinations/create.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = Patient.objects.get(pk=self.kwargs["pk"])
+        return context
+
+    def form_valid(self, form):
+        form.instance.made_on = timezone.now()
+        form.instance.done_by = self.request.user
+        form.instance.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        day_shift, night_shift = get_current_shifts()
+        form.instance.day_shift = day_shift
+        form.instance.night_shift = night_shift
+        form.instance.additional = True
+        form.instance.systole = form.cleaned_data["systole"]
+        form.instance.diastole = form.cleaned_data["diastole"]
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("patients:detail", kwargs={"pk": self.kwargs["pk"]})
+
+
+class ExaminationAdditionalTemperatureCreateView(
+    LoginRequiredMixin, generic.CreateView
+):
+    form_class = TemperatureForm
+    model = Examination
+    template_name = "examinations/create.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = Patient.objects.get(pk=self.kwargs["pk"])
+        return context
+
+    def form_valid(self, form):
+        form.instance.made_on = timezone.now()
+        form.instance.done_by = self.request.user
+        form.instance.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        day_shift, night_shift = get_current_shifts()
         form.instance.day_shift = day_shift
         form.instance.night_shift = night_shift
         form.instance.additional = True
         form.instance.temperature = form.cleaned_data["temperature"]
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("patients:detail", kwargs={"pk": self.kwargs["pk"]})
+
+
+class ExaminationAdditionalPulseCreateView(LoginRequiredMixin, generic.CreateView):
+    form_class = PulseForm
+    model = Examination
+    template_name = "examinations/create.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = Patient.objects.get(pk=self.kwargs["pk"])
+        return context
+
+    def form_valid(self, form):
+        form.instance.made_on = timezone.now()
+        form.instance.done_by = self.request.user
+        form.instance.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        day_shift, night_shift = get_current_shifts()
+        form.instance.day_shift = day_shift
+        form.instance.night_shift = night_shift
+        form.instance.additional = True
         form.instance.pulse = form.cleaned_data["pulse"]
-        form.instance.systole = form.cleaned_data["systole"]
-        form.instance.diastole = form.cleaned_data["diastole"]
-        form.instance.diet = form.cleaned_data["diet"]
-        form.instance.faeces = form.cleaned_data["faeces"]
-        print(" --- add ", form.instance.additional)
         return super().form_valid(form)
 
     def get_success_url(self):

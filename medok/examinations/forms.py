@@ -14,3 +14,36 @@ class ExaminationForm(ModelForm):
             "diet",
             "faeces",
         ]
+
+
+class DietForm(ExaminationForm):
+    class Meta:
+        model = Examination
+        fields = [
+            "diet",
+        ]
+
+
+class PressureForm(ExaminationForm):
+    class Meta:
+        model = Examination
+        fields = [
+            "systole",
+            "diastole",
+        ]
+
+
+class PulseForm(ExaminationForm):
+    class Meta:
+        model = Examination
+        fields = [
+            "pulse",
+        ]
+
+
+class TemperatureForm(ExaminationForm):
+    class Meta:
+        model = Examination
+        fields = [
+            "temperature",
+        ]

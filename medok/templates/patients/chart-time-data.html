@@ -2,27 +2,30 @@
 
 {% block content %}
   <div class="container" style="width: 75%";>
-    <canvas id="myChart"></canvas>
+    <canvas id="temperatureChart"></canvas>
+  </div>
+  <div class="container" style="width: 75%";>
+    <canvas id="pulseChart"></canvas>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.js"></script>
 
   <script>
-    var ctx = document.getElementById('myChart').getContext('2d');
+    var ctx = document.getElementById('temperatureChart').getContext('2d');
     var myChart = new Chart(ctx, {
     type: 'line',
     data: {
         datasets: [{
             label: 'Temperatura',
             data: [
-              {% for exam in exams %}
+              {% for temp in temps %}
               {
-                x: new Date({{ exam.made_on|date:"Y, m, d, H, i" }}),
-                y: {{ exam.temperature }}
+                x: new Date({{ temp.made_on|date:"Y, m, d, H, i" }}),
+                y: {{ temp.temperature }}
               },
               {% endfor %}
             ],
-            fill: false,
+            fill: true,
             backgroundColor: [
               'rgba(255, 99, 132, 0.2)',
             ],
@@ -38,8 +41,8 @@
             yAxes: [{
                 ticks: {
                     beginAtZero:false,
-                    min: 35,
-                    max: 45,
+                    min: 34,
+                    max: 43,
                 }
             }],
             xAxes: [{
@@ -57,7 +60,59 @@
             }]
         }
     }
-});
+  });
+</script>
+<script>
+  var ctx = document.getElementById('pulseChart').getContext('2d');
+  var myChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+      datasets: [{
+          label: 'Puls',
+          data: [
+            {% for pulse in pulses %}
+            {
+              x: new Date({{ pulse.made_on|date:"Y, m, d, H, i" }}),
+              y: {{ pulse.pulse }}
+            },
+            {% endfor %}
+          ],
+          fill: true,
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.2)',
+          ],
+          borderColor: [
+            'rgba(54, 162, 235, 1)',
+          ],
+          borderWidth: 1
+      },
+    ]
+  },
+  options: {
+      scales: {
+          yAxes: [{
+              ticks: {
+                  beginAtZero:false,
+                  min: 35,
+                  max: 155,
+              }
+          }],
+          xAxes: [{
+              type: 'time',
+              time: {
+                  parser: 'MM/DD/YYYY HH:mm',
+                  tooltipFormat: 'll HH:mm',
+                  unit: 'day',
+                  unitStepSize: 1,
+                  format: 'MM/DD/YYYY HH:mm',
+                  displayFormats: {
+                      'day': 'DD/M'
+                  },
+              }
+          }]
+      }
+  }
+  });
 </script>
 
 

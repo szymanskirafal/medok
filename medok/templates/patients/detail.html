@@ -75,20 +75,14 @@
 {% else %}
   <p>Badania z bieżącego dyżuru zrobione</p>
 {% endif %}
-<a class="btn btn-outline-success" href="{% url 'examinations:create-additional' patient.pk %}" role="button">Badania dodatkowe</a>
+<p>Dodatkowe badania:</p>
+<a class="btn btn-outline-success" href="{% url 'examinations:create-additional-temperature' patient.pk %}" role="button">Temperatura</a>
+<a class="btn btn-outline-success" href="{% url 'examinations:create-additional-pulse' patient.pk %}" role="button">Puls</a>
+<a class="btn btn-outline-success" href="{% url 'examinations:create-additional-pressure' patient.pk %}" role="button">Ciśnienie</a>
+<a class="btn btn-outline-success" href="{% url 'examinations:create-additional-diet' patient.pk %}" role="button">Dieta</a>
+<a class="btn btn-outline-success" href="{% url 'examinations:create-additional-temperature' patient.pk %}" role="button">Stolec</a>
 <a class="btn btn-outline-success" href="{% url 'patients:write_pdf_view' %}" role="button">Drukuj</a>
 </div>
 <br><br>
-<canvas id="myChart" width="200" height="200"></canvas>
 
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
-<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
-<script type="text/javascript">
-    $.get('{% url "patients:line_chart_json" %}', function(data) {
-        var ctx = $("#myChart").get(0).getContext("2d");
-        new Chart(ctx, {
-            type: 'line', data: data
-        });
-    });
-</script>
 {% endblock content %}

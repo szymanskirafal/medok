@@ -1,6 +1,5 @@
 import calendar
 
-from chartjs.views.lines import BaseLineChartView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
@@ -267,42 +266,23 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
         return results
 
 
-class PatientsChartTemplateView(generic.TemplateView):
-    template_name = "patients/chart.html"
-
-
-class PatientsChartTimeTemplateView(generic.TemplateView):
-    template_name = "patients/chart-time.html"
-
-
-class PatientsChartTimeDataTemplateView(generic.TemplateView):
+class PatientsChartTimeDataDetailView(LoginRequiredMixin, generic.DetailView):
+    context_object_name = "patient"
+    model = Patient
     template_name = "patients/chart-time-data.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         exams = Examination.objects.all()
+        exams = exams.filter(patient=self.get_object())
+        exams = exams.filter(made_on__year=timezone.now().year)
+        exams = exams.filter(made_on__month=timezone.now().month)
         exams = exams.order_by("made_on")
         context["exams"] = exams
+        context["pulses"] = exams.exclude(pulse__isnull=True)
+        context["temps"] = exams.exclude(temperature__isnull=True)
         return context
 
-
-class LineChartJSONView(BaseLineChartView):
-    def get_labels(self):
-        """Return 7 labels for the x-axis."""
-        return ["January", "February", "March", "April", "May", "June", "July"]
-
-    def get_providers(self):
-        """Return names of datasets."""
-        return ["Central"]
-
-    def get_data(self):
-        """Return 3 datasets to plot."""
-
-        return [[75, 44, 92, 11, 44, 95, 35]]
-
-
-line_chart = generic.TemplateView.as_view(template_name="patients/line_chart.html")
-line_chart_json = LineChartJSONView.as_view()
 
 """
 class PatientExaminationsDetailView(View):

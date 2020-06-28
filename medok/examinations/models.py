@@ -24,6 +24,7 @@ class Examination(TimeStampedModel):
     YES = "YE"
     NO = "NO"
     TYPE_OF_DIET = [
+        ("", "-- Wybierz opcję --"),
         (LIQUID, "Płynna"),
         (YES, "Tak"),
         (NO, "Nie"),
@@ -35,36 +36,33 @@ class Examination(TimeStampedModel):
     night_shift = models.BooleanField(default=False)
     additional = models.BooleanField(default=False)
     temperature = models.DecimalField(
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
         max_digits=3,
         decimal_places=1,
         verbose_name="Temperatura",
         validators=[validate_temperature_range],
     )
     pulse = models.PositiveSmallIntegerField(
-        null=False,
-        blank=False,
-        validators=[validate_pulse_range],
-        verbose_name="Tętno",
+        null=True, blank=True, validators=[validate_pulse_range], verbose_name="Tętno",
     )
     systole = models.PositiveSmallIntegerField(
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
         validators=[validate_systole_range],
         verbose_name="Ciśnienie Skurczowe",
     )
     diastole = models.PositiveSmallIntegerField(
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
         validators=[validate_diastole_range],
         verbose_name="Ciśnienie Rozkurczowe",
     )
     diet = models.CharField(
-        max_length=2, choices=TYPE_OF_DIET, default=NO, verbose_name="Dieta",
+        max_length=2, choices=TYPE_OF_DIET, default="", verbose_name="Dieta",
     )
     faeces = models.PositiveSmallIntegerField(
-        null=False, blank=False, verbose_name="Stolec",
+        null=True, blank=True, verbose_name="Stolec",
     )
 
     # def __str__(self):
