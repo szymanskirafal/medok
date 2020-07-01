@@ -7,6 +7,7 @@ urlpatterns = [
     path("", view=views.PatientsListView.as_view(), name="patients"),
     path("create/", view=views.PatientCreateView.as_view(), name="create"),
     path("<int:pk>/", view=views.PatientDetailView.as_view(), name="detail"),
+    path("<int:pk>/chart/", view=views.PatientChartDetailView.as_view(), name="chart",),
     # path(
     #    "<int:pk>/examinations/",
     #    view=views.PatientExaminationsDetailView.as_view(),

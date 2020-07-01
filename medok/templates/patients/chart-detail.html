@@ -5,7 +5,7 @@
 {% block content %}
 <div class="vw-100">
   <div class="row">
-    <div class="col">
+    <div class="col-3">
       <div class="row">
         <div class="col">
           <h3>{{ patient.name }} {{ patient.surname }}</h3>
@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <div class="col">
+    <div class="col-5">
       <h1>KARTA GORĄCZKOWA ogólna</h1>
     </div>
     <div class="col">
@@ -37,24 +37,6 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th scope="col" colspan="2"><a href="{% url 'examinations:temperatures' patient.pk %}">Ciepło</a></th>
-      {% for temp in temps %}
-        <td class="font-weight-lighter">{{ temp }}</td>
-      {% endfor %}
-    </tr>
-    <tr>
-      <th scope="col" colspan="2"><a href="{% url 'examinations:pulses' patient.pk %}">Tętno</a></th>
-      {% for pulse in pulses %}
-        <td class="font-weight-lighter">{{ pulse }}</td>
-      {% endfor %}
-    </tr>
-    <tr>
-      <th scope="col" colspan="2"><a href="{% url 'examinations:pressures' patient.pk %}">Ciśnienie</a></th>
-      {% for pressure in pressures %}
-        <td class="font-weight-lighter">{{ pressure }}</td>
-      {% endfor %}
-    </tr>
     <tr>
       <th scope="col" colspan="2"><a href="{% url 'examinations:diets' patient.pk %}">Dieta</a></th>
       {% for diet in diets %}
@@ -116,7 +98,7 @@
       datasets: [{
           label: 'Temperatura',
           data: [
-            {% for temp in temp_list %}
+            {% for temp in temps %}
             {
               x: new Date({{ temp.made_on|date:"Y, m, d, H, i" }}),
               y: {{ temp.temperature }}
@@ -169,7 +151,7 @@ data: {
     datasets: [{
         label: 'Puls',
         data: [
-          {% for pulse in pulse_list %}
+          {% for pulse in pulses %}
           {
             x: new Date({{ pulse.made_on|date:"Y, m, d, H, i" }}),
             y: {{ pulse.pulse }}
@@ -224,7 +206,7 @@ options: {
       {
         label: 'Skurczowe',
         data: [
-          {% for systole in systole_list %}
+          {% for systole in systoles %}
           {
             x: new Date({{ systole.made_on|date:"Y, m, d, H, i" }}),
             y: {{ systole.systole }}
@@ -244,7 +226,7 @@ options: {
       {
         label: 'Rozkurczowe',
         data: [
-          {% for diastole in diastole_list %}
+          {% for diastole in diastoles %}
           {
             x: new Date({{ diastole.made_on|date:"Y, m, d, H, i" }}),
             y: {{ diastole.diastole }}

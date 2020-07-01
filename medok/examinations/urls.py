@@ -12,6 +12,11 @@ urlpatterns = [
         name="create-additional-diet",
     ),
     path(
+        "create/<int:pk>/additional/faeces/",
+        view=views.ExaminationAdditionalFaecesCreateView.as_view(),
+        name="create-additional-faeces",
+    ),
+    path(
         "create/<int:pk>/additional/pressure/",
         view=views.ExaminationAdditionalPressureCreateView.as_view(),
         name="create-additional-pressure",
@@ -47,7 +52,7 @@ urlpatterns = [
         name="pulses",
     ),
     path(
-        "historical/temperature/<int:pk>",
+        "historical/temperatures/<int:pk>",
         view=views.ExaminationsTemperatureListView.as_view(),
         name="temperatures",
     ),

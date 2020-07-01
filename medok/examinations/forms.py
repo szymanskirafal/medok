@@ -24,6 +24,14 @@ class DietForm(ExaminationForm):
         ]
 
 
+class FaecesForm(ExaminationForm):
+    class Meta:
+        model = Examination
+        fields = [
+            "faeces",
+        ]
+
+
 class PressureForm(ExaminationForm):
     class Meta:
         model = Examination

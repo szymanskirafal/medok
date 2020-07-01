@@ -5,7 +5,14 @@ from django.views import generic
 from patients.models import Patient
 from patients.utils import get_current_shifts
 
-from .forms import DietForm, ExaminationForm, PressureForm, PulseForm, TemperatureForm
+from .forms import (
+    DietForm,
+    ExaminationForm,
+    FaecesForm,
+    PressureForm,
+    PulseForm,
+    TemperatureForm,
+)
 from .models import Examination
 
 
@@ -58,6 +65,31 @@ class ExaminationAdditionalDietCreateView(LoginRequiredMixin, generic.CreateView
         form.instance.night_shift = night_shift
         form.instance.additional = True
         form.instance.diet = form.cleaned_data["diet"]
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("patients:detail", kwargs={"pk": self.kwargs["pk"]})
+
+
+class ExaminationAdditionalFaecesCreateView(LoginRequiredMixin, generic.CreateView):
+    form_class = FaecesForm
+    model = Examination
+    template_name = "examinations/create.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["patient"] = Patient.objects.get(pk=self.kwargs["pk"])
+        return context
+
+    def form_valid(self, form):
+        form.instance.made_on = timezone.now()
+        form.instance.done_by = self.request.user
+        form.instance.patient = Patient.objects.get(pk=self.kwargs["pk"])
+        day_shift, night_shift = get_current_shifts()
+        form.instance.day_shift = day_shift
+        form.instance.night_shift = night_shift
+        form.instance.additional = True
+        form.instance.faeces = form.cleaned_data["faeces"]
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -154,7 +186,12 @@ class ExaminationsDietListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         self.patient = Patient.objects.get(pk=self.kwargs["pk"])
-        return Examination.objects.all().filter(patient=self.patient)
+        return (
+            Examination.objects.all()
+            .filter(patient=self.patient)
+            .exclude(diet__isnull=True)
+            .exclude(diet__exact="",)
+        )
 
 
 class ExaminationsFaecesListView(LoginRequiredMixin, generic.ListView):
@@ -169,7 +206,11 @@ class ExaminationsFaecesListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         self.patient = Patient.objects.get(pk=self.kwargs["pk"])
-        return Examination.objects.all().filter(patient=self.patient)
+        return (
+            Examination.objects.all()
+            .filter(patient=self.patient)
+            .exclude(faeces__isnull=True)
+        )
 
 
 class ExaminationsPressureListView(LoginRequiredMixin, generic.ListView):
@@ -184,7 +225,12 @@ class ExaminationsPressureListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         self.patient = Patient.objects.get(pk=self.kwargs["pk"])
-        return Examination.objects.all().filter(patient=self.patient)
+        return (
+            Examination.objects.all()
+            .filter(patient=self.patient)
+            .exclude(systole__isnull=True)
+            .exclude(diastole__isnull=True)
+        )
 
 
 class ExaminationsPulseListView(LoginRequiredMixin, generic.ListView):
@@ -199,7 +245,11 @@ class ExaminationsPulseListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         self.patient = Patient.objects.get(pk=self.kwargs["pk"])
-        return Examination.objects.all().filter(patient=self.patient)
+        return (
+            Examination.objects.all()
+            .filter(patient=self.patient)
+            .exclude(pulse__isnull=True)
+        )
 
 
 class ExaminationsTemperatureListView(LoginRequiredMixin, generic.ListView):
@@ -214,7 +264,11 @@ class ExaminationsTemperatureListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         self.patient = Patient.objects.get(pk=self.kwargs["pk"])
-        return Examination.objects.all().filter(patient=self.patient)
+        return (
+            Examination.objects.all()
+            .filter(patient=self.patient)
+            .exclude(temperature__isnull=True)
+        )
 
 
 """

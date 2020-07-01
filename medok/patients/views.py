@@ -63,6 +63,17 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        exams = Examination.objects.all()
+        exams = exams.filter(patient=self.get_object())
+        exams = exams.filter(made_on__year=timezone.now().year)
+        exams = exams.filter(made_on__month=timezone.now().month)
+        exams = exams.order_by("made_on")
+        context["exams"] = exams
+        context["systole_list"] = exams.exclude(systole__isnull=True)
+        context["diastole_list"] = exams.exclude(diastole__isnull=True)
+        context["pulse_list"] = exams.exclude(pulse__isnull=True)
+        context["temp_list"] = exams.exclude(temperature__isnull=True)
+
         context["days"] = self.get_days()
         context["diets"] = self.get_diets()
         context["examination_has_to_be_made"] = self.check_examination_need()
@@ -260,6 +271,126 @@ class PatientDetailView(LoginRequiredMixin, generic.DetailView):
                     if exam.night_shift:
                         results.append("BRAK")
                         results.append(exam.temperature)
+            else:
+                results.append("BRAK")
+                results.append("BRAK")
+        return results
+
+
+class PatientChartDetailView(LoginRequiredMixin, generic.DetailView):
+    context_object_name = "patient"
+    model = Patient
+    template_name = "patients/chart-detail.html"
+
+    def check_examination_need(self):
+        examinations = Examination.objects.all()
+        examinations = examinations.filter(patient=self.get_object(),)
+        examinations = examinations.filter(made_on__date=timezone.now().date(),)
+        examinations = examinations.filter(additional=False)
+        day_shift, night_shift = get_current_shifts()
+        examinations = examinations.filter(day_shift=day_shift)
+        examinations = examinations.filter(night_shift=night_shift)
+        if examinations.exists():
+            return False
+        else:
+            return True
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        exams = Examination.objects.all()
+        exams = exams.filter(patient=self.get_object())
+        exams = exams.filter(made_on__year=timezone.now().year)
+        exams = exams.filter(made_on__month=timezone.now().month)
+        exams = exams.order_by("made_on")
+        context["exams"] = exams
+        context["systoles"] = exams.exclude(systole__isnull=True)
+        context["diastoles"] = exams.exclude(diastole__isnull=True)
+        context["pulses"] = exams.exclude(pulse__isnull=True)
+        context["temps"] = exams.exclude(temperature__isnull=True)
+        context["days"] = self.get_days()
+        context["diets"] = self.get_diets()
+        context["examination_has_to_be_made"] = self.check_examination_need()
+        context["faeceses"] = self.get_faeceses()
+        context["shifts"] = self.get_shifts()
+        return context
+
+    def get_days(self):
+        days = calendar.monthrange(timezone.now().year, timezone.now().month)[1]
+        days = range(1, days + 1)
+        return days
+
+    def get_shifts(self):
+        shifts = []
+        for day in self.get_days():
+            shifts.append("R")
+            shifts.append("W")
+        return shifts
+
+    def get_faeceses(self):
+        results = []
+        exams = Examination.objects.all()
+        exams = exams.filter(patient=self.get_object())
+        exams = exams.filter(additional=False)
+        exams = exams.filter(made_on__year=timezone.now().year)
+        exams = exams.filter(made_on__month=timezone.now().month)
+        exams = exams.order_by("made_on")
+        days_exams_was_made = set()
+        for exam in exams:
+            days_exams_was_made.add(exam.made_on.day)
+        for day in self.get_days():
+            exams_this_day = []
+            for exam in exams:
+                if exam.made_on.day == day:
+                    exams_this_day.append(exam)
+            if len(exams_this_day) == 2:
+                for exam in exams_this_day:
+                    if exam.day_shift:
+                        results.append(exam.faeces)
+                    if exam.night_shift:
+                        results.append(exam.faeces)
+            elif len(exams_this_day) == 1:
+                for exam in exams_this_day:
+                    if exam.day_shift:
+                        results.append(exam.faeces)
+                        results.append("BRAK")
+                    if exam.night_shift:
+                        results.append("BRAK")
+                        results.append(exam.faeces)
+            else:
+                results.append("BRAK")
+                results.append("BRAK")
+        return results
+
+    def get_diets(self):
+        results = []
+        exams = Examination.objects.all()
+        exams = exams.filter(patient=self.get_object())
+        exams = exams.filter(additional=False)
+        exams = exams.filter(made_on__year=timezone.now().year)
+        exams = exams.filter(made_on__month=timezone.now().month)
+        exams = exams.order_by("made_on")
+        days_exams_was_made = set()
+        for exam in exams:
+            days_exams_was_made.add(exam.made_on.day)
+        for day in self.get_days():
+            exams_this_day = []
+            for exam in exams:
+                if exam.made_on.day == day:
+                    exams_this_day.append(exam)
+            if len(exams_this_day) == 2:
+                for exam in exams_this_day:
+                    if exam.day_shift:
+                        results.append(exam.get_diet_display())
+                    if exam.night_shift:
+                        results.append(exam.get_diet_display())
+            elif len(exams_this_day) == 1:
+                for exam in exams_this_day:
+                    if exam.day_shift:
+                        results.append(exam.get_diet_display())
+                        results.append("BRAK")
+                    if exam.night_shift:
+                        results.append("BRAK")
+                        results.append(exam.get_diet_display())
             else:
                 results.append("BRAK")
                 results.append("BRAK")
