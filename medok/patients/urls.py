@@ -15,6 +15,9 @@ urlpatterns = [
     # ),
     path("pdf/", view=views.write_pdf_view, name="write_pdf_view"),
     path(
+        "<int:pk>/cbv-pdf/", view=views.PatientPDFDetailView.as_view(), name="cbv-pdf",
+    ),
+    path(
         "<int:pk>/chart-time-data/",
         view=views.PatientsChartTimeDataDetailView.as_view(),
         name="chart-time-data",

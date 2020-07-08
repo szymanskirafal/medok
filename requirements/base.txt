@@ -17,3 +17,4 @@ django-redis==4.11.0  # https://github.com/jazzband/django-redis
 
 # PDF
 reportlab
+wkhtmltopdf # https://django-wkhtmltopdf.readthedocs.io/en/latest/index.html

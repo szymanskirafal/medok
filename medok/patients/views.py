@@ -16,14 +16,18 @@ from .models import Patient
 from .utils import get_current_shifts
 
 
-def write_pdf_view(request):
+def write_pdf_view(self):
     doc = SimpleDocTemplate("/tmp/kgo-test.pdf")
     styles = getSampleStyleSheet()
     Story = [Spacer(1, 2 * inch)]
     style = styles["Normal"]
-    bogustext = "Testowa strona wydruku KGO"
+    bogustext = "CBV ----- Testowa strona wydruku KGO"
+    patient = self.get_object()
     p = Paragraph(bogustext, style)
     Story.append(p)
+    patient_info = "Pacjent: " + patient.name
+    p1 = Paragraph(patient_info, style)
+    Story.append(p1)
     Story.append(Spacer(1, 0.2 * inch))
     doc.build(Story)
 
@@ -34,6 +38,13 @@ def write_pdf_view(request):
         return response
 
     return response
+
+
+class PatientPDFDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Patient
+
+    def render_to_response(self, context, **response_kwargs):
+        return write_pdf_view(self)
 
 
 class PatientCreateView(LoginRequiredMixin, generic.CreateView):

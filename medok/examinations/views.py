@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.views import generic
 from patients.models import Patient
 from patients.utils import get_current_shifts
+from wkhtmltopdf.views import PDFTemplateView
 
 from .forms import (
     DietForm,
@@ -255,7 +256,6 @@ class ExaminationsPulseListView(LoginRequiredMixin, generic.ListView):
 class ExaminationsTemperatureListView(LoginRequiredMixin, generic.ListView):
     context_object_name = "examinations"
     model = Examination
-    template_name = "examinations/temperatures.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -269,6 +269,11 @@ class ExaminationsTemperatureListView(LoginRequiredMixin, generic.ListView):
             .filter(patient=self.patient)
             .exclude(temperature__isnull=True)
         )
+
+
+class ExaminationsPDFView(LoginRequiredMixin, PDFTemplateView):
+    template_name = "examinations/temperatures.html"
+    filename = "my_pdf.pdf"
 
 
 """

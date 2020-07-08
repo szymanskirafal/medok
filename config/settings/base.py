@@ -69,6 +69,7 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "wkhtmltopdf",
 ]
 
 LOCAL_APPS = [
@@ -271,3 +272,5 @@ SOCIALACCOUNT_ADAPTER = "medok.users.adapters.SocialAccountAdapter"
 # Your stuff...
 # ------------------------------------------------------------------------------
 SITE_ID = 1
+WKHTMLTOPDF_CMD = "/usr/local/bin/wkhtmltopdf"
+WKHTMLTOPDF_CMD_OPTIONS = {"quiet": False}
