@@ -56,5 +56,9 @@ urlpatterns = [
         view=views.ExaminationsTemperatureListView.as_view(),
         name="temperatures",
     ),
-    path("pdf/", view=views.ExaminationsPDFView.as_view(), name="pdf",),
+    path(
+        "temperatures/<int:pk>/pdf/",
+        view=views.ExaminationsTemperaturePDFListView.as_view(),
+        name="temperatures-pdf",
+    ),
 ]

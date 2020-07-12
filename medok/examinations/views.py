@@ -1,10 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
 from patients.models import Patient
 from patients.utils import get_current_shifts
-from wkhtmltopdf.views import PDFTemplateView
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
 from .forms import (
     DietForm,
@@ -256,6 +260,7 @@ class ExaminationsPulseListView(LoginRequiredMixin, generic.ListView):
 class ExaminationsTemperatureListView(LoginRequiredMixin, generic.ListView):
     context_object_name = "examinations"
     model = Examination
+    template_name = "examinations/temperatures.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -271,9 +276,61 @@ class ExaminationsTemperatureListView(LoginRequiredMixin, generic.ListView):
         )
 
 
-class ExaminationsPDFView(LoginRequiredMixin, PDFTemplateView):
-    template_name = "examinations/temperatures.html"
-    filename = "my_pdf.pdf"
+class ExaminationsTemperaturePDFListView(LoginRequiredMixin, generic.ListView):
+    model = Examination
+
+    def get_queryset(self):
+        return (
+            Examination.objects.all()
+            .filter(patient=Patient.objects.get(pk=self.kwargs["pk"]))
+            .exclude(temperature__isnull=True)
+        )
+
+    def render_to_response(self, context, **response_kwargs):
+        return self.write_pdf_temperatures_view()
+
+    def write_pdf_temperatures_view(self):
+        doc = SimpleDocTemplate("/tmp/kgo-test.pdf")
+        styles = getSampleStyleSheet()
+        Story = [Spacer(1, 2 * inch)]
+        style = styles["Normal"]
+        patient = Patient.objects.get(pk=self.kwargs["pk"])
+
+        title = "KARTA GORĄCZKOWA ogólna"
+        p = Paragraph(title, style)
+        Story.append(p)
+
+        patient_name = patient.name + " " + patient.surname
+        p = Paragraph(patient_name, style)
+        Story.append(p)
+
+        patient_numbers = (
+            "Nr w Książce głównej: "
+            + patient.nr_in_main_book
+            + ", nr w Książce oddziałowej: "
+            + patient.nr_in_ward_book
+        )
+        p = Paragraph(patient_numbers, style)
+        Story.append(p)
+
+        exams = self.get_queryset()
+        for exam in exams:
+            exam_details = (
+                "data: " + " temp. " + str(exam.temperature) + " zmierzona przez "
+            )
+            p = Paragraph(exam_details, style)
+            Story.append(p)
+
+        Story.append(Spacer(1, 0.2 * inch))
+        doc.build(Story)
+
+        fs = FileSystemStorage("/tmp")
+        with fs.open("kgo-test.pdf") as pdf:
+            response = HttpResponse(pdf, content_type="application/pdf")
+            response["Content-Disposition"] = 'attachment; filename="kgo-test.pdf"'
+            return response
+
+        return response
 
 
 """

@@ -1,50 +1,14 @@
 import calendar
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import generic
 from examinations.models import Examination
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.units import inch
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
 from .forms import PatientForm
 from .models import Patient
 from .utils import get_current_shifts
-
-
-def write_pdf_view(self):
-    doc = SimpleDocTemplate("/tmp/kgo-test.pdf")
-    styles = getSampleStyleSheet()
-    Story = [Spacer(1, 2 * inch)]
-    style = styles["Normal"]
-    bogustext = "CBV ----- Testowa strona wydruku KGO"
-    patient = self.get_object()
-    p = Paragraph(bogustext, style)
-    Story.append(p)
-    patient_info = "Pacjent: " + patient.name
-    p1 = Paragraph(patient_info, style)
-    Story.append(p1)
-    Story.append(Spacer(1, 0.2 * inch))
-    doc.build(Story)
-
-    fs = FileSystemStorage("/tmp")
-    with fs.open("kgo-test.pdf") as pdf:
-        response = HttpResponse(pdf, content_type="application/pdf")
-        response["Content-Disposition"] = 'attachment; filename="kgo-test.pdf"'
-        return response
-
-    return response
-
-
-class PatientPDFDetailView(LoginRequiredMixin, generic.DetailView):
-    model = Patient
-
-    def render_to_response(self, context, **response_kwargs):
-        return write_pdf_view(self)
 
 
 class PatientCreateView(LoginRequiredMixin, generic.CreateView):

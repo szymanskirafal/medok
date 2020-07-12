@@ -1,20 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
-{% block css %}
-
-
-<link href="{% static 'css/project.css' %}" rel="stylesheet">
-
-
-{% endblock %}
-
 {% block content %}
 <div class="container">
 
   <h1>Historia pomiarów temperatury</h1>
   <p>Pacjent {{ patient.name }} {{ patient.surname }}</p>
   <p>adres: {{ patient.street }} {{ patient.nr }} {{ patient.city }}, ur. {{ patient.birthday|date:"d-m-Y" }}, PESEL {{patient.pesel }}</p>
-  <p>Numer w Książce Głównej: {{ patient.nr_in_main_book }}, Numer w Książce Oddziałowe: {{ patient.nr_in_ward_book }}</p>
+  <p>Numer w Książce Głównej: {{ patient.nr_in_main_book }}, Numer w Książce Oddziałowej: {{ patient.nr_in_ward_book }}</p>
+  <hr>
+    <a class="btn btn-outline-secondary" href="{% url 'examinations:temperatures-pdf' patient.pk %}" role="button">Drukuj</a>
   <br><br>
   {% for exam in examinations %}
     <p>Data: {{ exam.made_on|date:"d-m-Y" }}, czas: {{ exam.made_on|time:"h:i" }}, wynik: {{ exam.temperature }}, wykonany przez: {{ exam.done_by }}</p>
